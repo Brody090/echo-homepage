@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echo's Homepage</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 暗黑模式切换按钮 -->
+  <button id="theme-toggle" aria-label="切换暗黑模式" title="切换暗黑/明亮模式">
+    <span class="theme-icon-dark">🌙</span>
+    <span class="theme-icon-light">☀️</span>
+  </button>
+
+  <!-- 共享头像：fixed 定位，JS 驱动在第一屏与第二屏之间平滑过渡 -->
+  <img
+    id="shared-avatar"
+    src="https://image.010912.top/img/2026/02/%E5%A4%B4%E5%83%8F.%7Bext%7D"
+    alt="头像"
+  >
+
+  <!-- ==================== 第一屏：壁纸 + 个人信息 ==================== -->
+  <section id="first-screen">
+    <!-- Bing 每日壁纸 -->
+    <img id="wallpaper" src="" alt="">
+
+    <!-- 随滚动淡出层 -->
+    <div id="first-fade-layer">
+      <div id="first-content">
+        <!-- 头像占位（visibility:hidden，维持 flex 布局空间） -->
+        <div id="avatar-placeholder" aria-hidden="true"></div>
+
+        <!-- 打字效果标题 -->
+        <h1 id="typewriter">
+          <span class="static-text">Hi, I'm </span>
+          <span id="typewriter-name"></span>
+          <span class="cursor">|</span>
+        </h1>
+
+        <!-- 描述卡片 -->
+        <div id="description-card" class="glass">
+          <p>一名高一编程爱好者，课余时间做自己感兴趣的编程<span class="no-wrap">小项目</span>，主打「以兴趣驱动开发」✨</p>
+          <p>📚 目前主攻：TypeScript、Python</p>
+          <p>🎯 近期小项目：新年倒计时（TypeScript开发）</p>
+          <p>📝 开发信条：课余敲码，把兴趣变成看得见的小成果～</p>
+        </div>
+      </div>
+
+      <!-- 版权信息（毛玻璃小框，底部角落） -->
+      <div id="copyright" class="glass">加载中...</div>
+    </div>
+  </section>
+
+  <!-- ==================== 第二屏：跳转卡片 ==================== -->
+  <section id="second-screen">
+    <div id="second-content">
+      <!-- 头像目标位置占位 -->
+      <div id="avatar-target" aria-hidden="true"></div>
+
+      <!-- 联系方式 -->
+      <div class="card-section">
+        <h3 class="card-section-title">📬 联系方式</h3>
+        <div class="card-row">
+          <a href="mailto:janemlewisa29@gmail.com" class="link-card glass">📮 邮箱</a>
+          <a href="https://t.me/FastTalker_bot" class="link-card glass" target="_blank" rel="noopener">💬 电报联系地址</a>
+        </div>
+      </div>
+
+      <!-- 我的项目 -->
+      <div class="card-section">
+        <h3 class="card-section-title">🚀 我的项目</h3>
+        <ul class="project-list">
+          <li><a href="https://010912.top" class="link-card glass" target="_blank" rel="noopener">🌐 个人博客</a></li>
+          <li><a href="https://email.010912.top" class="link-card glass" target="_blank" rel="noopener">📧 临时邮箱</a></li>
+          <li><a href="https://newyear.010912.top" class="link-card glass" target="_blank" rel="noopener">🎆 新年倒计时网站</a></li>
+          <li><a href="https://sbti.010912.top" class="link-card glass" target="_blank" rel="noopener">🧠 SBTI 人格测试</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

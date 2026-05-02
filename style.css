@@ -1,0 +1,614 @@
+/* ============================================================
+   echo-homepage - 个人主页样式
+   纯原生 CSS，Apple 毛玻璃风格，暗黑模式，响应式
+   ============================================================ */
+
+/* ============================================================
+   CSS 变量 — 明亮主题（默认）
+   ============================================================ */
+:root {
+  --bg-body:            #e8e8ed;
+  --bg-second-screen:   rgba(255, 255, 255, 0.55);
+  --text-primary:       #1d1d1f;
+  --text-secondary:     #555;
+  --text-on-glass:      #1d1d1f;
+  --glass-bg:           rgba(255, 255, 255, 0.2);
+  --glass-bg-strong:    rgba(255, 255, 255, 0.45);
+  --glass-border:       rgba(255, 255, 255, 0.3);
+  --card-bg:            rgba(255, 255, 255, 0.4);
+  --card-hover-bg:      rgba(255, 255, 255, 0.65);
+  --shadow-sm:          rgba(0, 0, 0, 0.06);
+  --shadow-md:          rgba(0, 0, 0, 0.1);
+  --shadow-lg:          rgba(0, 0, 0, 0.15);
+  --sbti-accent:        #6366f1;
+  --sbti-accent-light:  rgba(99, 102, 241, 0.12);
+  --toggle-bg:          rgba(0, 0, 0, 0.06);
+  --toggle-text:        #1d1d1f;
+  --divider:            rgba(0, 0, 0, 0.08);
+  --first-screen-bg:    #1e2a3a;
+}
+
+/* ============================================================
+   暗黑主题：跟随系统偏好
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-body:            #0f0f1a;
+    --bg-second-screen:   rgba(20, 20, 40, 0.78);
+    --text-primary:       #e8e8f0;
+    --text-secondary:     #9a9ab0;
+    --text-on-glass:      #e8e8f0;
+    --glass-bg:           rgba(40, 40, 65, 0.5);
+    --glass-bg-strong:    rgba(40, 40, 65, 0.65);
+    --glass-border:       rgba(255, 255, 255, 0.1);
+    --card-bg:            rgba(35, 35, 60, 0.55);
+    --card-hover-bg:      rgba(45, 45, 75, 0.75);
+    --shadow-sm:          rgba(0, 0, 0, 0.25);
+    --shadow-md:          rgba(0, 0, 0, 0.35);
+    --shadow-lg:          rgba(0, 0, 0, 0.5);
+    --sbti-accent:        #818cf8;
+    --sbti-accent-light:  rgba(129, 140, 248, 0.15);
+    --toggle-bg:          rgba(255, 255, 255, 0.08);
+    --toggle-text:        #e8e8f0;
+    --divider:            rgba(255, 255, 255, 0.08);
+    --first-screen-bg:    #0a0a14;
+  }
+}
+
+/* 手动强制暗黑 */
+html.dark {
+  --bg-body:            #0f0f1a;
+  --bg-second-screen:   rgba(20, 20, 40, 0.78);
+  --text-primary:       #e8e8f0;
+  --text-secondary:     #9a9ab0;
+  --text-on-glass:      #e8e8f0;
+  --glass-bg:           rgba(40, 40, 65, 0.5);
+  --glass-bg-strong:    rgba(40, 40, 65, 0.65);
+  --glass-border:       rgba(255, 255, 255, 0.1);
+  --card-bg:            rgba(35, 35, 60, 0.55);
+  --card-hover-bg:      rgba(45, 45, 75, 0.75);
+  --shadow-sm:          rgba(0, 0, 0, 0.25);
+  --shadow-md:          rgba(0, 0, 0, 0.35);
+  --shadow-lg:          rgba(0, 0, 0, 0.5);
+  --sbti-accent:        #818cf8;
+  --sbti-accent-light:  rgba(129, 140, 248, 0.15);
+  --toggle-bg:          rgba(255, 255, 255, 0.08);
+  --toggle-text:        #e8e8f0;
+  --divider:            rgba(255, 255, 255, 0.08);
+  --first-screen-bg:    #0a0a14;
+}
+
+/* 手动强制明亮 */
+html.light {
+  --bg-body:            #e8e8ed;
+  --bg-second-screen:   rgba(255, 255, 255, 0.55);
+  --text-primary:       #1d1d1f;
+  --text-secondary:     #555;
+  --text-on-glass:      #1d1d1f;
+  --glass-bg:           rgba(255, 255, 255, 0.2);
+  --glass-bg-strong:    rgba(255, 255, 255, 0.45);
+  --glass-border:       rgba(255, 255, 255, 0.3);
+  --card-bg:            rgba(255, 255, 255, 0.4);
+  --card-hover-bg:      rgba(255, 255, 255, 0.65);
+  --shadow-sm:          rgba(0, 0, 0, 0.06);
+  --shadow-md:          rgba(0, 0, 0, 0.1);
+  --shadow-lg:          rgba(0, 0, 0, 0.15);
+  --sbti-accent:        #6366f1;
+  --sbti-accent-light:  rgba(99, 102, 241, 0.12);
+  --toggle-bg:          rgba(0, 0, 0, 0.06);
+  --toggle-text:        #1d1d1f;
+  --divider:            rgba(0, 0, 0, 0.08);
+  --first-screen-bg:    #1e2a3a;
+}
+
+/* ============================================================
+   基础重置
+   ============================================================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'PingFang SC',
+    'Microsoft YaHei',
+    sans-serif;
+  background: var(--bg-body);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ============================================================
+   工具类
+   ============================================================ */
+.no-wrap {
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Apple 毛玻璃基础样式
+   ============================================================ */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+}
+
+/* ============================================================
+   暗黑模式切换按钮
+   ============================================================ */
+#theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 200;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, background 0.3s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+#theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+#theme-toggle:active {
+  transform: scale(0.95);
+}
+
+/* 默认：明亮模式 → 显示月亮，隐藏太阳 */
+.theme-icon-dark { display: inline; }
+.theme-icon-light { display: none; }
+
+/* 系统偏好暗黑 → 显示太阳，隐藏月亮 */
+@media (prefers-color-scheme: dark) {
+  :root .theme-icon-dark { display: none; }
+  :root .theme-icon-light { display: inline; }
+}
+
+/* 手动暗黑 → 显示太阳 */
+html.dark .theme-icon-dark { display: none; }
+html.dark .theme-icon-light { display: inline; }
+
+/* 手动明亮 → 显示月亮（覆盖系统暗黑偏好） */
+html.light .theme-icon-dark { display: inline; }
+html.light .theme-icon-light { display: none; }
+
+/* ============================================================
+   共享头像（fixed 定位，JS 驱动跨屏过渡）
+   ============================================================ */
+#shared-avatar {
+  position: fixed;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 8px 32px var(--shadow-lg);
+  will-change: left, top;
+  transition: box-shadow 0.4s ease;
+}
+
+/* ============================================================
+   第一屏
+   ============================================================ */
+#first-screen {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--first-screen-bg);
+  transition: background 0.4s ease;
+}
+
+/* 壁纸 <img> 全屏铺满 */
+#wallpaper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+#wallpaper.loaded {
+  opacity: 1;
+}
+
+/* 淡出层：包裹首屏内容 + 版权，随滚动 opacity 0→1 反向 */
+#first-fade-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 首屏核心内容：flex column 垂直居中 */
+#first-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+/* 头像占位（不可见，仅维持 flex 间距） */
+#avatar-placeholder {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  visibility: hidden;
+  flex-shrink: 0;
+}
+
+/* 打字效果文字：头像下方 32px */
+#typewriter {
+  margin-top: 32px;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  text-align: center;
+  min-height: 2.6rem;
+  line-height: 1.3;
+}
+
+#typewriter .static-text,
+#typewriter-name {
+  color: #fff;
+}
+
+#typewriter .cursor {
+  display: inline-block;
+  color: #fff;
+  font-weight: 300;
+  animation: cursorBlink 0.8s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  50% { opacity: 0; }
+}
+
+/* 描述卡片 */
+#description-card {
+  margin-top: 28px;
+  padding: 24px 32px;
+  max-width: 540px;
+  width: 90%;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  line-height: 1.85;
+  font-size: 0.95rem;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+#description-card p {
+  margin-bottom: 4px;
+}
+
+#description-card p:last-child {
+  margin-bottom: 0;
+}
+
+/* 版权框：桌面端右下角，宽度自适应文字 */
+#copyright {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  display: inline-block;
+  width: fit-content;
+  white-space: nowrap;
+  max-width: 70vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   第二屏
+   ============================================================ */
+#second-screen {
+  min-height: 100vh;
+  position: relative;
+  z-index: 2;
+  background: var(--bg-second-screen);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background 0.4s ease;
+}
+
+#second-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px 80px;
+  min-height: 100vh;
+}
+
+/* 第二屏头像目标位置占位 */
+#avatar-target {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  visibility: hidden;
+  flex-shrink: 0;
+  margin-bottom: 40px;
+}
+
+/* ============================================================
+   卡片分区
+   ============================================================ */
+.card-section {
+  width: 100%;
+  max-width: 720px;
+  margin-bottom: 36px;
+}
+
+.card-section:last-child {
+  margin-bottom: 0;
+}
+
+.card-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  padding-left: 4px;
+  transition: color 0.4s ease;
+}
+
+.card-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* 项目列表（纵向排列） */
+.project-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.project-list .link-card {
+  width: 100%;
+  justify-content: flex-start;
+  padding-left: 24px;
+}
+
+.project-list .link-card::after {
+  content: "→";
+  margin-left: auto;
+  font-size: 1.15rem;
+  opacity: 0.35;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.project-list .link-card:hover::after {
+  transform: translateX(4px);
+  opacity: 1;
+}
+
+/* 链接卡片 */
+.link-card {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 22px 18px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-on-glass);
+  font-size: 0.95rem;
+  font-weight: 500;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.3s ease;
+}
+
+.link-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px var(--shadow-md);
+  background: var(--card-hover-bg);
+}
+
+/* ============================================================
+   响应式：平板及以下 (≤768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  #typewriter {
+    font-size: 1.45rem;
+    margin-top: 26px;
+  }
+
+  #description-card {
+    padding: 18px 20px;
+    font-size: 0.85rem;
+    line-height: 1.75;
+    max-width: 92%;
+  }
+
+  #shared-avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  #avatar-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+
+  #avatar-target {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+  }
+
+  /* 移动端版权：居中 + 换行显示完整文字 */
+  #copyright {
+    bottom: 20px;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 18px;
+    font-size: 0.78rem;
+    white-space: normal;
+    text-align: center;
+    max-width: 88vw;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  #theme-toggle {
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .card-section {
+    margin-bottom: 28px;
+  }
+
+  .card-section-title {
+    font-size: 1rem;
+    text-align: center;
+    padding-left: 0;
+  }
+
+  .card-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .project-list .link-card {
+    width: 92%;
+    padding-left: 20px;
+  }
+
+  .link-card {
+    max-width: 100%;
+    width: 92%;
+    flex: none;
+  }
+
+}
+
+/* ============================================================
+   响应式：小屏手机 (≤480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  #typewriter {
+    font-size: 1.2rem;
+    margin-top: 22px;
+    min-height: 2.2rem;
+  }
+
+  #description-card {
+    margin-top: 20px;
+    padding: 14px 16px;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    max-width: 94%;
+    word-break: normal;
+  }
+
+  #shared-avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  #avatar-placeholder {
+    width: 80px;
+    height: 80px;
+  }
+
+  #avatar-target {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 16px;
+  }
+
+  #copyright {
+    bottom: 16px;
+    padding: 8px 14px;
+    font-size: 0.72rem;
+    max-width: 90vw;
+  }
+
+  #second-content {
+    padding: 40px 14px 60px;
+  }
+
+  .card-section {
+    margin-bottom: 22px;
+  }
+
+  .card-section-title {
+    font-size: 0.95rem;
+  }
+
+  .card-row {
+    gap: 12px;
+  }
+
+  .project-list {
+    gap: 10px;
+  }
+
+  .project-list .link-card {
+    width: 92%;
+    padding-left: 18px;
+  }
+
+  .link-card {
+    padding: 20px 16px;
+    font-size: 0.9rem;
+  }
+
+}

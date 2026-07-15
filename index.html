@@ -19,7 +19,7 @@
   <meta property="og:description" content="Echo 的个人主页 — 一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。">
   <meta property="og:url" content="https://010912.top">
   <meta property="og:site_name" content="Echo's Homepage">
-  <meta property="og:image" content="https://image.010912.top/img/2026/02/%E5%A4%B4%E5%83%8F.%7Bext%7D">
+  <meta property="og:image" content="https://img.010912.top/file/网站相关/1784033194646_Github头像.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
@@ -27,7 +27,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Echo's Homepage">
   <meta name="twitter:description" content="Echo 的个人主页 — 一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。">
-  <meta name="twitter:image" content="https://image.010912.top/img/2026/02/%E5%A4%B4%E5%83%8F.%7Bext%7D">
+  <meta name="twitter:image" content="https://img.010912.top/file/网站相关/1784033194646_Github头像.webp">
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -37,30 +37,34 @@
     "name": "Echo",
     "description": "一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。",
     "url": "https://010912.top",
-    "image": "https://image.010912.top/img/2026/02/%E5%A4%B4%E5%83%8F.%7Bext%7D",
+    "image": "https://img.010912.top/file/网站相关/1784033194646_Github头像.webp",
     "sameAs": [
       "https://github.com/Brody090",
       "https://t.me/FastTalker_bot"
     ],
-    "knowsAbout": ["TypeScript", "Python", "Web Development"]
+    "knowsAbout": ["TypeScript", "Python", "Web Development"] 
   }
   </script>
 
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="stylesheet" href="style.css">
+
+  <!-- Iconify 图标 -->
+  <script src="https://code.iconify.design/iconify-icon/3.0.2/iconify-icon.min.js"></script>
 </head>
 <body>
 
   <!-- 暗黑模式切换按钮 -->
   <button id="theme-toggle" aria-label="切换暗黑模式" title="切换暗黑/明亮模式">
-    <span class="theme-icon-dark">🌙</span>
-    <span class="theme-icon-light">☀️</span>
+    <span class="theme-icon-dark"><iconify-icon icon="material-symbols:dark-mode"></iconify-icon></span>
+    <span class="theme-icon-light"><iconify-icon icon="material-symbols:sunny"></iconify-icon></span>
+    <span class="theme-icon-auto"><iconify-icon icon="material-symbols:computer"></iconify-icon></span>
   </button>
 
   <!-- 共享头像：fixed 定位，JS 驱动在第一屏与第二屏之间平滑过渡 -->
   <img
     id="shared-avatar"
-    src="https://image.010912.top/img/2026/02/%E5%A4%B4%E5%83%8F.%7Bext%7D"
+    src="https://img.010912.top/file/网站相关/1784033194646_Github头像.webp"
     alt="头像"
   >
 
@@ -104,21 +108,21 @@
 
       <!-- 联系方式 -->
       <div class="card-section">
-        <h3 class="card-section-title">📬 联系方式</h3>
+        <h3 class="card-section-title"><iconify-icon icon="material-symbols:android-contacts"></iconify-icon> 联系方式</h3>
         <div class="card-row">
-          <a href="mailto:janemlewisa29@gmail.com" class="link-card glass">📮 邮箱</a>
-          <a href="https://t.me/FastTalker_bot" class="link-card glass" target="_blank" rel="noopener">💬 电报联系地址</a>
+          <a href="mailto:janemlewisa29@gmail.com" class="link-card glass"><iconify-icon icon="material-symbols:mail-rounded"></iconify-icon> 邮箱</a>
+          <a href="https://t.me/FastTalker_bot" class="link-card glass" target="_blank" rel="noopener"><iconify-icon icon="fa7-brands:telegram"></iconify-icon> 电报联系地址</a>
         </div>
       </div>
 
       <!-- 我的项目 -->
       <div class="card-section">
-        <h3 class="card-section-title">🚀 我的项目</h3>
+        <h3 class="card-section-title"><iconify-icon icon="carbon:ibm-cloud-projects"></iconify-icon> 我的项目</h3>
         <ul class="project-list">
-          <li><a href="https://010912.top" class="link-card glass" target="_blank" rel="noopener">🌐 个人博客</a></li>
-          <li><a href="https://email.010912.top" class="link-card glass" target="_blank" rel="noopener">📧 临时邮箱</a></li>
-          <li><a href="https://newyear.010912.top" class="link-card glass" target="_blank" rel="noopener">🎆 新年倒计时网站</a></li>
-          <li><a href="https://sbti.010912.top" class="link-card glass" target="_blank" rel="noopener">🧠 SBTI 人格测试</a></li>
+          <li><a href="https://010912.top" class="link-card glass" target="_blank" rel="noopener"><iconify-icon icon="fa7-brands:blogger-b"></iconify-icon> 个人博客</a></li>
+          <li><a href="https://email.010912.top" class="link-card glass" target="_blank" rel="noopener"><iconify-icon icon="material-symbols:stacked-email-outline-rounded"></iconify-icon> 临时邮箱</a></li>
+          <li><a href="https://newyear.010912.top" class="link-card glass" target="_blank" rel="noopener"><iconify-icon icon="streamline:interface-time-rewind-back-return-clock-timer-countdown"></iconify-icon> 新年倒计时网站</a></li>
+
         </ul>
       </div>
     </div>

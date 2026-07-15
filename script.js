@@ -184,6 +184,7 @@
   // ===================== 暗黑模式切换 =====================
   var themeToggle = document.getElementById('theme-toggle');
   var THEME_KEY = 'echo-homepage-theme'; // 'dark' | 'light' | 'auto'
+  var themeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
   function getSavedTheme() {
     try {
@@ -208,6 +209,7 @@
       html.classList.add('light');
     }
     // mode === 'auto': 不添加任何 class，跟随系统
+    updateToggleTitle(mode);
   }
 
   function cycleTheme() {
@@ -224,9 +226,39 @@
     applyTheme(next);
   }
 
+  function getSystemTheme() {
+    return themeMediaQuery.matches ? 'dark' : 'light';
+  }
+
+  function updateToggleTitle(mode) {
+    if (!themeToggle) return;
+    var effective = mode === 'auto' ? getSystemTheme() : mode;
+    var nextMap = { auto: '暗黑', dark: '明亮', light: '跟随系统' };
+    var nextLabel = nextMap[mode];
+    var currentLabel = effective === 'dark' ? '暗黑模式' : '明亮模式';
+    themeToggle.title = '当前：' + currentLabel + '（' + (mode === 'auto' ? '跟随系统' : '手动') + '） — 点击切换' + nextLabel;
+    themeToggle.setAttribute('data-mode', mode);
+  }
+
   function initTheme() {
     applyTheme(getSavedTheme());
     themeToggle.addEventListener('click', cycleTheme);
+
+    // 监听系统主题变化，在 auto 模式下同步更新按钮提示
+    if (typeof themeMediaQuery.addEventListener === 'function') {
+      themeMediaQuery.addEventListener('change', function () {
+        if (getSavedTheme() === 'auto') {
+          updateToggleTitle('auto');
+        }
+      });
+    } else {
+      // 旧浏览器降级
+      themeMediaQuery.addListener(function () {
+        if (getSavedTheme() === 'auto') {
+          updateToggleTitle('auto');
+        }
+      });
+    }
   }
 
   // ===================== 入口 =====================

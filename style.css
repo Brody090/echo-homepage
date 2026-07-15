@@ -181,9 +181,15 @@ body {
   transform: scale(0.95);
 }
 
-/* 默认：明亮模式 → 显示月亮，隐藏太阳 */
+/* 自动模式标记：虚线边框 */
+#theme-toggle[data-mode="auto"] {
+  border-style: dashed;
+}
+
+/* 默认：明亮模式 → 显示月亮，隐藏太阳、电脑 */
 .theme-icon-dark { display: inline; }
 .theme-icon-light { display: none; }
+.theme-icon-auto { display: none; }
 
 /* 系统偏好暗黑 → 显示太阳，隐藏月亮 */
 @media (prefers-color-scheme: dark) {
@@ -198,6 +204,11 @@ html.dark .theme-icon-light { display: inline; }
 /* 手动明亮 → 显示月亮（覆盖系统暗黑偏好） */
 html.light .theme-icon-dark { display: inline; }
 html.light .theme-icon-light { display: none; }
+
+/* 自动模式 → 显示电脑，隐藏月亮和太阳 */
+#theme-toggle[data-mode="auto"] .theme-icon-dark,
+#theme-toggle[data-mode="auto"] .theme-icon-light { display: none; }
+#theme-toggle[data-mode="auto"] .theme-icon-auto { display: inline; }
 
 /* ============================================================
    共享头像（fixed 定位，JS 驱动跨屏过渡）
@@ -611,4 +622,17 @@ html.light .theme-icon-light { display: none; }
     font-size: 0.9rem;
   }
 
+}
+
+/* ============================================================
+   Iconify 图标基础样式
+   ============================================================ */
+iconify-icon {
+  display: inline-block;
+  vertical-align: -0.125em;
+}
+
+.link-card iconify-icon,
+.card-section-title iconify-icon {
+  margin-right: 0.3em;
 }

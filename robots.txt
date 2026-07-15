@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://010912.top/sitemap.xml

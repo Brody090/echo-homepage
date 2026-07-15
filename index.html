@@ -33,21 +33,43 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Person",
-    "name": "Echo",
-    "description": "一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。",
-    "url": "https://010912.top",
-    "image": "https://img.010912.top/file/网站相关/1784033194646_Github头像.webp",
-    "sameAs": [
-      "https://github.com/Brody090",
-      "https://t.me/FastTalker_bot"
-    ],
-    "knowsAbout": ["TypeScript", "Python", "Web Development"] 
+    "@graph": [
+      {
+        "@type": "Person",
+        "name": "Echo",
+        "description": "一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。",
+        "jobTitle": "学生",
+        "url": "https://010912.top",
+        "image": "https://img.010912.top/file/网站相关/1784033194646_Github头像.webp",
+        "sameAs": [
+          "https://github.com/Brody090",
+          "https://t.me/FastTalker_bot"
+        ],
+        "knowsAbout": ["TypeScript", "Python", "Web Development"],
+        "knowsLanguage": ["zh-CN", "en"]
+      },
+      {
+        "@type": "WebSite",
+        "name": "Echo's Homepage",
+        "url": "https://010912.top",
+        "description": "Echo 的个人主页 — 一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。",
+        "inLanguage": "zh-CN"
+      }
+    ]
   }
   </script>
 
   <link rel="icon" href="logo.png" type="image/png">
   <link rel="stylesheet" href="style.css">
+
+  <!-- 浏览器 UI 主题色（明亮/暗黑各一套，浏览器根据用户系统偏好自动选择） -->
+  <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
+
+  <!-- Apple Web App -->
+  <link rel="apple-touch-icon" href="logo.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Echo's Homepage">
 
   <!-- Iconify 图标 -->
   <script src="https://code.iconify.design/iconify-icon/3.0.2/iconify-icon.min.js"></script>
@@ -56,8 +78,8 @@
 
   <!-- 暗黑模式切换按钮 -->
   <button id="theme-toggle" aria-label="切换暗黑模式" title="切换暗黑/明亮模式">
-    <span class="theme-icon-dark"><iconify-icon icon="material-symbols:dark-mode"></iconify-icon></span>
-    <span class="theme-icon-light"><iconify-icon icon="material-symbols:sunny"></iconify-icon></span>
+    <span class="theme-icon-dark"><iconify-icon icon="material-symbols:sunny"></iconify-icon></span>
+    <span class="theme-icon-light"><iconify-icon icon="material-symbols:dark-mode"></iconify-icon></span>
     <span class="theme-icon-auto"><iconify-icon icon="material-symbols:computer"></iconify-icon></span>
   </button>
 

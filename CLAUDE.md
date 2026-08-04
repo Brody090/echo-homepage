@@ -4,24 +4,30 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-纯原生 HTML/CSS/JS 个人介绍页，无框架，无构建步骤。三个文件严格分离：结构(index.html)、样式(style.css)、逻辑(script.js)。
+React + TypeScript + Tailwind CSS v4 的个人介绍页，使用 Vite 构建，产物为静态站点（部署于 Cloudflare Pages）。
 
 ## 开发方式
 
-直接打开 `index.html` 即可预览。无需构建、打包、安装依赖。
+```bash
+npm install
+npm run dev        # 本地开发
+npm run build      # tsc 类型检查 + vite build，输出 dist/
+npm run preview    # 预览构建产物
+```
 
 ## 架构要点
 
-- **共享头像过渡**：`#shared-avatar` 为 `position: fixed` 的单个 `<img>` 元素，JS 在 scroll 事件中通过 `getBoundingClientRect()` 在两个不可见占位元素（`#avatar-placeholder` 在第一屏，`#avatar-target` 在第二屏）之间线性插值位置
-- **主题系统**：CSS 自定义属性三层回退 — `:root`（明亮默认）→ `@media (prefers-color-scheme: dark)`（系统暗黑）→ `html.dark`/`html.light`（手动覆盖，最高优先级）。JS 通过 `localStorage` 持久化用户在 auto/dark/light 三态间的选择
-- **毛玻璃效果**：`.glass` 基础类使用 `rgba()` 背景 + `backdrop-filter: blur(20px)` + 半透明边框
-- **滚动驱动**：RAF 节流的 scroll 处理，`progress = clamp(scrollY / windowHeight, 0, 1)` 同时驱动头像位移和首屏淡出
-- **打字机效果**：递归 `setTimeout` 实现逐字打印/删除，名字从 `['Echo', 'LoveEcho', '菠萝']` 中随机轮换（不与上一次重复），周期约 3s
-- **壁纸**：启动时 fetch Bing 每日壁纸 API，加载完成后添加 `.loaded` class 触发 opacity 过渡
+- **组件**：`src/components/`，两屏结构（FirstScreen / SecondScreen）+ ThemeToggle + SharedAvatar
+- **逻辑 hooks**：`src/hooks/`，useTheme（三态主题）、useTypewriter（打字机）、useWallpaper（Bing 壁纸）、useScrollProgress（rAF 节流滚动进度）
+- **共享头像过渡**：`SharedAvatar` 为 fixed 定位的单 `<img>`，useEffect 中通过 `getBoundingClientRect()` 在首屏占位（originRef）与第二屏占位（targetRef）之间线性插值定位
+- **主题系统**：CSS 变量两层（`:root` 明亮 / `.dark` 暗黑），Tailwind `@theme inline` 将语义色映射到变量；用户三态选择（auto/dark/light）存在 `localStorage['echo-homepage-theme']`，`useTheme` 计算生效主题并同步 `<html>` 上的 `.dark` class（Tailwind `dark:` 变体与变量同时生效）；`index.html` 内置预载脚本防闪烁
+- **毛玻璃效果**：`.glass` 基础类（@layer components），`bg-glass + backdrop-blur-[20px] + border-glass-border`
+- **数据**：名字列表、联系方式、项目链接统一放在 `src/data/site.ts`
+- **响应式断点**：沿用旧版语义——移动端基础样式 + `min-[481px]` + `md:`（768px+）
 
 ## 编辑注意事项
 
-- 所有尺寸、颜色值定义在 `:root` CSS 变量中，暗黑/明亮主题各一套。修改颜色时需同步更新四组变量（`:root`、`@media dark`、`html.dark`、`html.light`）
-- 响应式断点：768px（平板）和 480px（小屏手机），修改组件尺寸时需检查对应断点下的覆盖规则
-- `.no-wrap` 工具类用于防止 CJK 词语在换行时被拆分
-- JS 使用 IIFE + `'use strict'` 模式，所有变量限定在闭包内
+- 所有颜色值定义在 `src/index.css` 的 `:root` / `.dark` 变量中，改色需同步两套
+- 图标使用 `@iconify/react`，图标名与 Iconify API 一致（material-symbols / fa7-brands / carbon / streamline）
+- 静态文件（logo.png / robots.txt / sitemap.xml / _headers）放在 `public/`，构建时自动复制到 `dist/`
+- 新增组件时保持无未使用变量/参数（tsconfig strict）

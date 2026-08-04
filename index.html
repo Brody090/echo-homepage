@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="auto">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,97 +59,31 @@
   }
   </script>
 
-  <link rel="icon" href="logo.png" type="image/png">
-  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/logo.png" type="image/png">
 
   <!-- 浏览器 UI 主题色（明亮/暗黑各一套，浏览器根据用户系统偏好自动选择） -->
   <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
 
   <!-- Apple Web App -->
-  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="apple-touch-icon" href="/logo.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Echo's Homepage">
 
-  <!-- Iconify 图标 -->
-  <script src="https://code.iconify.design/iconify-icon/3.0.2/iconify-icon.min.js"></script>
+  <!-- 首屏渲染前同步主题，避免暗黑模式闪烁 -->
+  <script>
+    (function () {
+      try {
+        var mode = localStorage.getItem('echo-homepage-theme') || 'auto';
+        var dark = mode === 'dark' || (mode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.classList.toggle('dark', dark);
+        document.documentElement.setAttribute('data-theme', mode);
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
 </head>
 <body>
-
-  <!-- 暗黑模式切换按钮 -->
-  <button id="theme-toggle" aria-label="切换暗黑模式" title="切换暗黑/明亮模式">
-    <span class="theme-icon-dark"><iconify-icon icon="material-symbols:sunny"></iconify-icon></span>
-    <span class="theme-icon-light"><iconify-icon icon="material-symbols:dark-mode"></iconify-icon></span>
-    <span class="theme-icon-auto"><iconify-icon icon="material-symbols:computer"></iconify-icon></span>
-  </button>
-
-  <!-- 共享头像：fixed 定位，JS 驱动在第一屏与第二屏之间平滑过渡 -->
-  <img
-    id="shared-avatar"
-    src="https://img.010912.top/file/网站相关/1784033194646_Github头像.webp"
-    alt="头像"
-  >
-
-  <!-- ==================== 第一屏：壁纸 + 个人信息 ==================== -->
-  <section id="first-screen">
-    <!-- Bing 每日壁纸 -->
-    <img id="wallpaper" src="" alt="">
-
-    <!-- 随滚动淡出层 -->
-    <div id="first-fade-layer">
-      <div id="first-content">
-        <!-- 头像占位（visibility:hidden，维持 flex 布局空间） -->
-        <div id="avatar-placeholder" aria-hidden="true"></div>
-
-        <!-- 打字效果标题 -->
-        <h1 id="typewriter">
-          <span class="static-text">Hi, I'm </span>
-          <span id="typewriter-name"></span>
-          <span class="cursor">|</span>
-        </h1>
-
-        <!-- 描述卡片 -->
-        <div id="description-card" class="glass">
-          <p>一名高一编程爱好者，课余时间做自己感兴趣的编程<span class="no-wrap">小项目</span>，主打「以兴趣驱动开发」✨</p>
-          <p>📚 目前主攻：TypeScript、Python</p>
-          <p>🎯 近期小项目：新年倒计时（TypeScript开发）</p>
-          <p>📝 开发信条：课余敲码，把兴趣变成看得见的小成果～</p>
-        </div>
-      </div>
-
-      <!-- 版权信息（毛玻璃小框，底部角落） -->
-      <div id="copyright" class="glass">加载中...</div>
-    </div>
-  </section>
-
-  <!-- ==================== 第二屏：跳转卡片 ==================== -->
-  <section id="second-screen">
-    <div id="second-content">
-      <!-- 头像目标位置占位 -->
-      <div id="avatar-target" aria-hidden="true"></div>
-
-      <!-- 联系方式 -->
-      <div class="card-section">
-        <h3 class="card-section-title"><iconify-icon icon="material-symbols:android-contacts"></iconify-icon> 联系方式</h3>
-        <div class="card-row">
-          <a href="mailto:janemlewisa29@gmail.com" class="link-card glass"><iconify-icon icon="material-symbols:mail-rounded"></iconify-icon> 邮箱</a>
-          <a href="https://t.me/FastTalker_bot" class="link-card glass" target="_blank" rel="noopener"><iconify-icon icon="fa7-brands:telegram"></iconify-icon> 电报联系地址</a>
-        </div>
-      </div>
-
-      <!-- 我的项目 -->
-      <div class="card-section">
-        <h3 class="card-section-title"><iconify-icon icon="carbon:ibm-cloud-projects"></iconify-icon> 我的项目</h3>
-        <ul class="project-list">
-          <li><a href="https://010912.top" class="link-card glass" target="_blank" rel="noopener"><iconify-icon icon="fa7-brands:blogger-b"></iconify-icon> 个人博客</a></li>
-          <li><a href="https://email.010912.top" class="link-card glass" target="_blank" rel="noopener"><iconify-icon icon="material-symbols:stacked-email-outline-rounded"></iconify-icon> 临时邮箱</a></li>
-          <li><a href="https://newyear.010912.top" class="link-card glass" target="_blank" rel="noopener"><iconify-icon icon="streamline:interface-time-rewind-back-return-clock-timer-countdown"></iconify-icon> 新年倒计时网站</a></li>
-
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <script src="script.js"></script>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
 </body>
 </html>

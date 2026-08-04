@@ -1,11 +1,11 @@
 # Echo's Homepage
 
 [![License](https://img.shields.io/github/license/Brody090/echo-homepage)](LICENSE)
-![Tech Stack](https://img.shields.io/badge/tech-HTML%20%2B%20CSS%20%2B%20JS-orange)
+![Tech Stack](https://img.shields.io/badge/tech-React%20%2B%20TypeScript%20%2B%20Tailwind%20CSS-blue)
 
 🔗 **线上地址：[https://010912.top](https://010912.top)**
 
-我的个人主页，纯原生三件套搭建，毛玻璃风格，支持暗黑模式。
+我的个人主页，基于 React + TypeScript + Tailwind CSS 构建，Apple 毛玻璃风格，支持暗黑模式。
 
 ## 特性
 
@@ -18,25 +18,35 @@
 
 ## 技术栈
 
-HTML + CSS + JavaScript，零依赖，无框架，无构建步骤。
+Vite + React 19 + TypeScript + Tailwind CSS v4
 
 ## 项目结构
 
 ```
-index.html   — 页面结构 + SEO / Open Graph / 结构化数据
-style.css    — 样式（CSS 变量主题系统，四组主题色）
-script.js    — 交互逻辑（壁纸获取、打字机、头像过渡、主题切换）
-logo.png     — 网站图标
+src/
+├─ main.tsx            # React 入口
+├─ App.tsx             # 组装两屏与共享头像
+├─ index.css           # Tailwind v4 主题令牌 + 毛玻璃基础类
+├─ data/site.ts        # 名字、联系方式、项目链接等常量
+├─ hooks/              # useTheme / useTypewriter / useWallpaper / useScrollProgress
+└─ components/         # 两屏与各 UI 组件
+```
+
+## 本地开发
+
+```bash
+npm install
+npm run dev      # 开发服务器
+npm run build    # 类型检查 + 产物构建（dist/）
+npm run preview  # 预览构建产物
 ```
 
 ## 部署
 
-纯静态文件，直接部署到任意静态托管服务即可：
+静态构建产物，输出目录为 `dist/`。Cloudflare Pages 配置：
 
-```bash
-# 示例：用任意 HTTP 服务器本地预览
-npx serve .
-```
+- 构建命令：`npm run build`
+- 输出目录：`dist`
 
 ## License
 

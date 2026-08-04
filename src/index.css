@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* 三态主题：.dark 类由 useTheme 根据 auto/dark/light 计算后挂到 <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+
+  --color-body: var(--bg-body);
+  --color-panel: var(--bg-second-screen);
+  --color-ink: var(--text-primary);
+  --color-ink-soft: var(--text-secondary);
+  --color-ink-glass: var(--text-on-glass);
+  --color-glass: var(--glass-bg);
+  --color-glass-strong: var(--glass-bg-strong);
+  --color-glass-border: var(--glass-border);
+  --color-card: var(--card-bg);
+  --color-card-hover: var(--card-hover-bg);
+  --color-accent: var(--sbti-accent);
+  --color-accent-soft: var(--sbti-accent-light);
+  --color-toggle: var(--toggle-bg);
+  --color-toggle-ink: var(--toggle-text);
+  --color-divider: var(--divider);
+  --color-first: var(--first-screen-bg);
+
+  --shadow-glass-sm: var(--shadow-sm);
+  --shadow-glass-md: var(--shadow-md);
+  --shadow-glass-lg: var(--shadow-lg);
+}
+
+/* ============ 明亮主题（默认） ============ */
+:root {
+  --bg-body: #e8e8ed;
+  --bg-second-screen: rgba(255, 255, 255, 0.55);
+  --text-primary: #1d1d1f;
+  --text-secondary: #555;
+  --text-on-glass: #1d1d1f;
+  --glass-bg: rgba(255, 255, 255, 0.2);
+  --glass-bg-strong: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --card-bg: rgba(255, 255, 255, 0.4);
+  --card-hover-bg: rgba(255, 255, 255, 0.65);
+  --shadow-sm: rgba(0, 0, 0, 0.06);
+  --shadow-md: rgba(0, 0, 0, 0.1);
+  --shadow-lg: rgba(0, 0, 0, 0.15);
+  --sbti-accent: #6366f1;
+  --sbti-accent-light: rgba(99, 102, 241, 0.12);
+  --toggle-bg: rgba(0, 0, 0, 0.06);
+  --toggle-text: #1d1d1f;
+  --divider: rgba(0, 0, 0, 0.08);
+  --first-screen-bg: #1e2a3a;
+}
+
+/* ============ 暗黑主题（手动 dark 或 auto + 系统暗黑） ============ */
+.dark {
+  --bg-body: #0f0f1a;
+  --bg-second-screen: rgba(20, 20, 40, 0.78);
+  --text-primary: #e8e8f0;
+  --text-secondary: #9a9ab0;
+  --text-on-glass: #e8e8f0;
+  --glass-bg: rgba(40, 40, 65, 0.5);
+  --glass-bg-strong: rgba(40, 40, 65, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --card-bg: rgba(35, 35, 60, 0.55);
+  --card-hover-bg: rgba(45, 45, 75, 0.75);
+  --shadow-sm: rgba(0, 0, 0, 0.25);
+  --shadow-md: rgba(0, 0, 0, 0.35);
+  --shadow-lg: rgba(0, 0, 0, 0.5);
+  --sbti-accent: #818cf8;
+  --sbti-accent-light: rgba(129, 140, 248, 0.15);
+  --toggle-bg: rgba(255, 255, 255, 0.08);
+  --toggle-text: #e8e8f0;
+  --divider: rgba(255, 255, 255, 0.08);
+  --first-screen-bg: #0a0a14;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply overflow-x-hidden bg-body font-sans text-ink transition-colors duration-300;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply rounded-[20px] border border-glass-border bg-glass backdrop-blur-[20px];
+  }
+}
+
+@keyframes cursorBlink {
+  50% {
+    opacity: 0;
+  }
+}

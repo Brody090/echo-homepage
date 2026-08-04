@@ -1,2 +1,18 @@
+# Node
+node_modules/
+dist/
+
 # Claude Code
 .claude/
+
+# Editor
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

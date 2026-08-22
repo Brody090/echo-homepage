@@ -14,7 +14,7 @@ export function FirstScreen({ progress, originRef }: FirstScreenProps) {
 
   return (
     <section className="relative h-screen overflow-hidden bg-first transition-colors duration-300">
-      <Wallpaper src={wallpaper.src} alt={wallpaper.alt} loaded={wallpaper.loaded} />
+      <Wallpaper src={wallpaper.src} alt={wallpaper.alt} />
 
       {/* 随滚动淡出层 */}
       <div

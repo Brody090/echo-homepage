@@ -5,6 +5,9 @@ dist/
 # Claude Code
 .claude/
 
+# AgentTeams 运行时状态
+.agent-teams/
+
 # Editor
 .idea/
 .vscode/*

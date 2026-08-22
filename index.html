@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Echo's Homepage</title>
 
+  <!-- 资源提示：壁纸图域预连接；头像高优先级预加载（本页最核心的小图）；
+       点击后才访问的域名只做廉价 dns-prefetch -->
+  <link rel="preconnect" href="https://www.bing.com">
+  <link rel="preload" as="image" href="/avatar.webp" fetchpriority="high">
+  <link rel="dns-prefetch" href="https://t.me">
+  <link rel="dns-prefetch" href="https://email.010912.top">
+  <link rel="dns-prefetch" href="https://newyear.010912.top">
+
   <!-- Primary Meta Tags -->
   <meta name="description" content="Echo 的个人主页 — 一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。">
   <meta name="keywords" content="个人主页,编程,TypeScript,Python,Echo">
@@ -59,14 +67,14 @@
   }
   </script>
 
-  <link rel="icon" href="/logo.png" type="image/png">
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 
   <!-- 浏览器 UI 主题色（明亮/暗黑各一套，浏览器根据用户系统偏好自动选择） -->
   <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
 
   <!-- Apple Web App -->
-  <link rel="apple-touch-icon" href="/logo.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Echo's Homepage">
 

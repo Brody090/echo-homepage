@@ -34,6 +34,10 @@ export function SharedAvatar({ progress, originRef, targetRef }: SharedAvatarPro
       ref={avatarRef}
       src={AVATAR_URL}
       alt="头像"
+      width={130}
+      height={130}
+      decoding="async"
+      fetchPriority="high"
       className="pointer-events-none fixed z-[100] h-[80px] w-[80px] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover shadow-glass-lg will-change-[left,top] min-[481px]:h-[100px] min-[481px]:w-[100px] md:h-[130px] md:w-[130px]"
     />
   );

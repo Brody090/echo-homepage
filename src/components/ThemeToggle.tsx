@@ -1,6 +1,6 @@
-import { Icon } from '@iconify/react';
 import type { ThemeMode } from '../hooks/useTheme';
 import { useTheme } from '../hooks/useTheme';
+import { ComputerIcon, DarkModeIcon, SunnyIcon } from './icons';
 
 const NEXT_LABEL: Record<ThemeMode, string> = {
   auto: '暗黑',
@@ -23,11 +23,11 @@ export function ThemeToggle() {
       className="fixed right-5 top-5 z-[200] flex h-[42px] w-[42px] cursor-pointer items-center justify-center rounded-full border border-glass-border bg-glass p-0 text-[1.1rem] leading-none backdrop-blur-[12px] transition-transform duration-300 hover:scale-110 active:scale-95 max-[480px]:right-[14px] max-[480px]:top-[14px] max-[480px]:h-9 max-[480px]:w-9 max-[480px]:text-base [&[data-mode='auto']]:border-dashed"
     >
       {mode === 'auto' ? (
-        <Icon icon="material-symbols:computer" />
+        <ComputerIcon />
       ) : effective === 'dark' ? (
-        <Icon icon="material-symbols:sunny" />
+        <SunnyIcon />
       ) : (
-        <Icon icon="material-symbols:dark-mode" />
+        <DarkModeIcon />
       )}
     </button>
   );

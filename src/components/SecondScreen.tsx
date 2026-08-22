@@ -20,7 +20,7 @@ export function SecondScreen({ targetRef }: SecondScreenProps) {
 
         {/* 联系方式 */}
         <div className="mb-[22px] w-full max-w-[720px] last:mb-0 min-[481px]:mb-7 md:mb-9">
-          <SectionTitle icon="material-symbols:android-contacts">联系方式</SectionTitle>
+          <SectionTitle icon="android-contacts">联系方式</SectionTitle>
           <div className="flex flex-col items-center gap-3 max-w-full md:flex-row md:flex-wrap md:gap-4 max-[480px]:gap-3">
             {CONTACTS.map(item => (
               <LinkCard key={item.label} item={item} />
@@ -30,7 +30,7 @@ export function SecondScreen({ targetRef }: SecondScreenProps) {
 
         {/* 我的项目 */}
         <div className="mb-[22px] w-full max-w-[720px] last:mb-0 min-[481px]:mb-7 md:mb-9">
-          <SectionTitle icon="carbon:ibm-cloud-projects">我的项目</SectionTitle>
+          <SectionTitle icon="ibm-cloud-projects">我的项目</SectionTitle>
           <ul className="flex flex-col gap-[14px] max-[480px]:gap-[10px]">
             {PROJECTS.map(item => (
               <li key={item.label}>

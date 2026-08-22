@@ -1,14 +1,31 @@
+import { useEffect, useState } from 'react';
+
 interface WallpaperProps {
   src: string;
   alt: string;
-  loaded: boolean;
 }
 
-export function Wallpaper({ src, alt, loaded }: WallpaperProps) {
+/**
+ * 全屏壁纸。loaded 只在 <img> 真正解码完成时置 true（而不是 URL 拿到时），
+ * 保证 800ms 渐显发生在图片可用之后，不再出现「先空白后闪出」；
+ * 低优先级 + 异步解码，把网络预算让给文字与头像。
+ */
+export function Wallpaper({ src, alt }: WallpaperProps) {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+  }, [src]);
+
+  if (!src) return null;
+
   return (
     <img
       src={src}
       alt={alt}
+      decoding="async"
+      fetchPriority="low"
+      onLoad={() => setLoaded(true)}
       className={`absolute inset-0 z-0 h-full w-full object-cover transition-opacity duration-[800ms] ${
         loaded ? 'opacity-100' : 'opacity-0'
       }`}

@@ -30,7 +30,7 @@ Echo 的个人主页 — 基于 **React 19 + TypeScript + Tailwind CSS v4** 构�
 |语言|TypeScript|^7.0.2|
 |样式|Tailwind CSS|^4.3.3|
 |构建|Vite|^8.2.0|
-|图标|@iconify/react|^6.0.2|
+|图标|内联 SVG（src/components/icons.tsx）|—|
 |部署|Cloudflare Pages|静态站点|
 
 ## 📁 项目结构
@@ -60,10 +60,13 @@ src/
    └─ SectionTitle.tsx    # 带图标的章节标题
 
 public/                   # 静态资源（构建时复制到 dist/）
-├─ logo.png               # 站点图标
-├─ robots.txt             # 爬虫规则 + sitemap 引用
-├─ sitemap.xml            # 站点地图
-└─ _headers               # Cloudflare Pages 安全响应头
+├─ favicon-32.png          # 站点图标（32×32）
+├─ apple-touch-icon.png    # Apple 触屏图标（180×180）
+├─ avatar.webp             # 头像（本地化 260×260 webp）
+├─ wallpaper.json          # 构建时注入的当日壁纸（scripts/fetch-wallpaper.mjs 生成）
+├─ robots.txt              # 爬虫规则 + sitemap 引用
+├─ sitemap.xml             # 站点地图
+└─ _headers                # Cloudflare Pages 安全响应头 + 缓存策略
 ```
 
 ## 🌐 域名

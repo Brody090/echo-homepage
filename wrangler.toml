@@ -1,6 +1,10 @@
 # wrangler.toml — Echo's Homepage (Cloudflare Pages)
-# 本文件用于 Wrangler CLI 部署（wrangler pages deploy），
-# 不影响 Cloudflare Pages 的 Git 集成自动部署配置。
+# 注意：Cloudflare Pages 的 Git 集成会自动检测本文件（BETA），
+# 并用它作为构建配置来源。因此必须显式提供 [build].command，
+# 否则构建步骤会被跳过、报 "Output directory dist not found"。
 name = "echo-homepage"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-08-04"
+
+[build]
+command = "npm run build"

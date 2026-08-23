@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Echo's Homepage</title>
 
-  <!-- 资源提示：壁纸图域预连接；头像高优先级预加载（本页最核心的小图）；
-       点击后才访问的域名只做廉价 dns-prefetch -->
-  <link rel="preconnect" href="https://www.bing.com">
+  <!-- 资源提示：头像高优先级预加载（本页最核心的小图）；壁纸为同源 /wallpaper.jpg，
+       构建时由 vite 插件注入低优先级 preload；点击后才访问的域名只做廉价 dns-prefetch -->
   <link rel="preload" as="image" href="/avatar.webp" fetchpriority="high">
   <link rel="dns-prefetch" href="https://t.me">
   <link rel="dns-prefetch" href="https://email.010912.top">

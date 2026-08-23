@@ -4,6 +4,7 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/fetch-wallpaper.mjs",
     "dev": "vite",
     "build": "tsc --noEmit && node scripts/fetch-wallpaper.mjs && vite build",
     "preview": "vite preview",

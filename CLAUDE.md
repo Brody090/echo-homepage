@@ -29,5 +29,5 @@ npm run preview    # 预览构建产物
 
 - 所有颜色值定义在 `src/index.css` 的 `:root` / `.dark` 变量中，改色需同步两套
 - 图标为内联 SVG 组件（`src/components/icons.tsx`，body 取自 material-symbols / fa7-brands / carbon / streamline 四个 Iconify 集合），新增图标时向该文件添加组件
-- 静态文件（favicon-32.png / apple-touch-icon.png / avatar.webp / wallpaper.json / robots.txt / sitemap.xml / _headers）放在 `public/`，构建时自动复制到 `dist/`；`wallpaper.json` 由 `scripts/fetch-wallpaper.mjs` 在构建时从 Bing 官方 API 抓取生成
+- 静态文件（favicon-32.png / apple-touch-icon.png / avatar.webp / wallpaper.json / wallpaper.jpg / robots.txt / sitemap.xml / _headers）放在 `public/`，构建时自动复制到 `dist/`；`wallpaper.json` 与壁纸图本体 `wallpaper.jpg` 由 `scripts/fetch-wallpaper.mjs` 在构建时从 Bing 官方 API 抓取生成（图片下载到本地、运行时同源加载，零第三方请求）
 - 新增组件时保持无未使用变量/参数（tsconfig strict）

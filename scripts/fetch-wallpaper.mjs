@@ -7,12 +7,14 @@
 //
 // 失败策略：保留已有的 wallpaper.json（构建不中断）；若从未成功过，页面回退到首屏底色。
 // 想保持每日新鲜：让部署平台（CF Pages / GitHub Action）每日触发一次构建即可。
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const OUT = join(ROOT, 'public', 'wallpaper.json');
+const IMG_OUT = join(ROOT, 'public', 'wallpaper.jpg');
+const IMG_TMP = join(ROOT, 'public', 'wallpaper.jpg.tmp');
 const API = 'https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN';
 
 function formatDate(yyyymmdd) {
@@ -28,9 +30,23 @@ try {
   const data = await res.json();
   const image = data?.images?.[0];
   if (!image?.url || !image?.startdate) throw new Error('unexpected payload');
+  const remoteUrl = 'https://www.bing.com' + image.url;
+
+  // 下载壁纸图本体到 public/wallpaper.jpg（同源加载，运行时零第三方请求；
+  // 依赖 bing.com 跨域图在部分网络环境下会被拦截导致壁纸不显示）
+  const imgRes = await fetch(remoteUrl, {
+    headers: { 'User-Agent': 'Mozilla/5.0 (echo-homepage build)' },
+    signal: AbortSignal.timeout(60000),
+  });
+  if (!imgRes.ok) throw new Error(`image HTTP ${imgRes.status}`);
+  const buf = Buffer.from(await imgRes.arrayBuffer());
+  if (buf.length < 10_000) throw new Error(`image too small (${buf.length}B)`);
+  writeFileSync(IMG_TMP, buf);
+  renameSync(IMG_TMP, IMG_OUT);
+
   const payload = {
     date: formatDate(image.startdate),
-    url: 'https://www.bing.com' + image.url,
+    url: '/wallpaper.jpg',
     copyright: image.copyright ?? 'Bing 每日壁纸',
   };
   const next = JSON.stringify(payload, null, 2) + '\n';
@@ -40,13 +56,14 @@ try {
   } else {
     mkdirSync(dirname(OUT), { recursive: true });
     writeFileSync(OUT, next, 'utf8');
-    console.log('[wallpaper] updated:', payload.date, '-', payload.url);
+    console.log('[wallpaper] updated:', payload.date, '-', remoteUrl, '-> /wallpaper.jpg');
   }
 } catch (err) {
   const msg = err instanceof Error ? err.message : String(err);
-  if (existsSync(OUT)) {
-    console.warn('[wallpaper] fetch failed, keeping existing wallpaper.json:', msg);
+  rmSync(IMG_TMP, { force: true });
+  if (existsSync(OUT) && existsSync(IMG_OUT)) {
+    console.warn('[wallpaper] fetch failed, keeping existing wallpaper.json + wallpaper.jpg:', msg);
   } else {
-    console.warn('[wallpaper] fetch failed, no wallpaper.json (page falls back to plain background):', msg);
+    console.warn('[wallpaper] fetch failed, no local wallpaper (page falls back to plain background):', msg);
   }
 }

@@ -86,12 +86,12 @@ Echo 的个人主页 — 基于 **React 19 + TypeScript + Tailwind CSS v4** 构�
 
 壁纸分两层：构建时快照负责「快」（首屏 preload 即热图，也是最终兜底），Cloudflare Pages Functions 负责「新」（运行时每日更换）：
 
-1. `scripts/fetch-wallpaper.mjs` 从 Bing 官方 `HPImageArchive` 接口抓取当日 1920×1080 壁纸，把图片本体下载到 `public/wallpaper.jpg`（原子写入），并把日期/版权写入 `public/wallpaper.json`（`url` 指向同源 `/wallpaper.jpg`）；
+1. `scripts/fetch-wallpaper.mjs` 从 Bing 官方 `HPImageArchive` 接口抓取当日壁纸（优先 **UHD 3840×2160**，个别图片无 UHD 时回退原始分辨率），把图片本体下载到 `public/wallpaper.jpg`（原子写入），并把日期/版权写入 `public/wallpaper.json`（`url` 指向同源 `/wallpaper.jpg`）；
 2. `vite.config.ts` 的 `wallpaperPreload` 插件读取该 JSON，把壁纸 URL 注入 `index.html` 的 `<link rel="preload" as="image" fetchpriority="low">`；
 3. 运行时 `useWallpaper` 先同步读 `localStorage` 缓存、再 `fetch('/wallpaper.json')`，壁纸图随 HTML 解析阶段同源并行下载，任何网络环境都不受第三方域名可用性影响（快照失败则用缓存兜底，与历史行为一致）；
 4. 渲染后后台请求 `/api/wallpaper`（`functions/api/wallpaper.js` 边缘代取 Bing，服务端 fetch 不受 CORS 约束），返回与快照同构的 `{date,url,copyright}`；仅当 `date` 严格更新时，探针预加载 `/api/wallpaper-image/<id>` 成功后才换图（图片本体由 `functions/api/wallpaper-image/[[path]].js` 流式代理，最终同源加载）；标签页从后台回前台时重查。本地 dev / preview 无 functions 环境时该请求 404，静默降级到快照。
 
-> 官方 API 无 CORS 头，浏览器直接 `fetch` 会被拦截——因此运行时的新鲜度与图片都必须经本站 functions 代理，前端绝不直连 `bing.com`。JSON 缓存 `s-maxage=1800`（边缘 30 分钟内收敛到新日期）+ 图片 URL 内容寻址（每日不同 → `immutable` 缓存一年），回源量 ≈ 每 PoP 每 30 分钟 1 次，远低于免费额度；错误响应一律 `no-store`。抓取或下载失败时保留已有 `wallpaper.json` / `wallpaper.jpg`，构建不中断；从未成功过则页面回退首屏纯底色。更改壁纸市场（`mkt`）需同步改 `functions/api/wallpaper.js` 与 `scripts/fetch-wallpaper.mjs` 两处常量。
+> 官方 API 无 CORS 头，浏览器直接 `fetch` 会被拦截——因此运行时的新鲜度与图片都必须经本站 functions 代理，前端绝不直连 `bing.com`。JSON 缓存 `s-maxage=1800`（边缘 30 分钟内收敛到新日期）+ 图片 URL 内容寻址（每日不同 → `immutable` 缓存一年），回源量 ≈ 每 PoP 每 30 分钟 1 次，远低于免费额度；错误响应一律 `no-store`。抓取或下载失败时保留已有 `wallpaper.json` / `wallpaper.jpg`，构建不中断；从未成功过则页面回退首屏纯底色。图片分辨率：Bing 接口默认 1920×1080，构建脚本与 `/api/wallpaper` 均把图片 id 后缀升级为 `_UHD.jpg`（3840×2160），高分屏不再模糊；已缓存旧 URL（`..._1920x1080.jpg`）仍按内容寻址正常服务，次日随日期翻转自动换到 UHD。更改壁纸市场（`mkt`）需同步改 `functions/api/wallpaper.js` 与 `scripts/fetch-wallpaper.mjs` 两处常量。
 
 ### 主题系统
 

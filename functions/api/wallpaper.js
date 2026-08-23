@@ -38,7 +38,9 @@ export async function onRequestGet() {
     const src = typeof img.url === 'string' && img.url ? img.url : img.urlbase;
     const m = /[?&]id=(OHR\.[A-Za-z0-9_.\-]{1,160})(?:&|$)/.exec(src);
     if (!m) throw new Error('bad image id: ' + src);
-    const imageId = m[1];
+    // 清晰度:把 Bing 默认的 1920×1080 分辨率后缀升级为 UHD(3840×2160),大屏不再模糊;
+    // 已带 UHD 后缀或 urlbase 无后缀时保持不变(维持原行为)
+    const imageId = m[1].replace(/_\d+x\d+\.jpg$/, '_UHD.jpg');
     const date = `${img.startdate.slice(0, 4)}-${img.startdate.slice(4, 6)}-${img.startdate.slice(6, 8)}`;
     return Response.json(
       {

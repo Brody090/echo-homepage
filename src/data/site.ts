@@ -63,12 +63,4 @@ export const PROJECTS: LinkItem[] = [
     description: '即开即用的临时邮箱小工具。',
     tags: ['在线工具'],
   },
-  {
-    icon: 'time-rewind',
-    label: '新年倒计时网站',
-    href: 'https://newyear.010912.top',
-    external: true,
-    description: '跨年倒计时活动页，TypeScript 开发。',
-    tags: ['TypeScript', '活动页'],
-  },
 ];

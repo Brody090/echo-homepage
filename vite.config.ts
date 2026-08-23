@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 /**
  * 把构建时注入的壁纸 URL（public/wallpaper.json）写进 index.html 的 preload，
  * 让壁纸图在 HTML 解析阶段即开始并行下载——LCP 关键路径从
- * 「JS → 第三方 API → 2.65MB UHD 下载」缩短为「HTML → 直接下载 1920×1080」。
+ * 「JS → 第三方 API → 大图下载」缩短为「HTML → 直接下载 UHD(3840×2160) 壁纸」。
  * 低优先级：不抢占 CSS/JS/头像的带宽。
  */
 function wallpaperPreload(): Plugin {

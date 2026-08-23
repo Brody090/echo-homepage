@@ -6,7 +6,7 @@ export function DescriptionCard() {
         <span className="whitespace-nowrap">小项目</span>，主打「以兴趣驱动开发」✨
       </p>
       <p>📚 目前主攻：TypeScript、Python</p>
-      <p>🎯 近期小项目：新年倒计时（TypeScript开发）</p>
+      <p>🎯 近期小项目：临时邮箱（即开即用）</p>
       <p>📝 开发信条：课余敲码，把兴趣变成看得见的小成果～</p>
     </div>
   );

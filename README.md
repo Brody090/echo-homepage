@@ -11,7 +11,7 @@ Echo 的个人主页 — 基于 **React 19 + TypeScript + Tailwind CSS v4** 构�
 
 ## ✨ 特性
 
-- **Bing 每日壁纸（构建时注入）** — 构建阶段从 Bing 官方 API 抓取当日壁纸并把图片本体下载到本地 `wallpaper.jpg`（`wallpaper.json` 记录日期/版权），运行时完全同源加载、零第三方请求，加载失败自动回退 `localStorage` 当日缓存或纯底色
+- **Bing 每日壁纸（快照兜底 + 边缘每日刷新）** — 构建阶段从 Bing 官方 API 抓取当日壁纸并下载图片本体到本地 `wallpaper.jpg`（`wallpaper.json` 记录日期/版权）作为首屏快照与兜底；运行时后台经 Cloudflare Pages Functions 边缘代理（`/api/wallpaper`）拿当日新图，日期更新时自动换图。所有第三方请求均走本站 functions，前端零直连第三方
 - **LCP 关键路径优化** — 壁纸 URL 在构建时注入 `index.html` 的 `<link rel="preload">`，配合头像高优先级预加载与 `preconnect` / `dns-prefetch` 资源提示，壁纸随 HTML 并行下载
 - **打字机效果** — `useTypewriter` 逐字打印名字（Echo / LoveEcho / 菠萝）并循环轮换
 - **共享头像过渡** — `SharedAvatar` 以 fixed 定位，随滚动进度在首屏与第二屏占位之间平滑插值移动
@@ -39,6 +39,11 @@ Echo 的个人主页 — 基于 **React 19 + TypeScript + Tailwind CSS v4** 构�
 ├─ index.html                 # HTML 入口：SEO meta + 资源提示 + 防闪烁主题脚本
 ├─ vite.config.ts             # Vite 配置：wallpaperPreload 插件（壁纸 preload 注入）
 ├─ tsconfig.json
+├─ functions/                 # Cloudflare Pages Functions（随 Git 集成构建自动部署）
+│  └─ api/
+│     ├─ wallpaper.js         # GET /api/wallpaper：当日壁纸元数据（边缘代取 Bing，短缓存）
+│     └─ wallpaper-image/
+│        └─ [[path]].js       # GET /api/wallpaper-image/<id>：图片本体流式代理（内容寻址，immutable）
 ├─ public/                    # 静态资源（构建时复制到 dist/）
 │  ├─ favicon-32.png          # 站点图标（32×32）
 │  ├─ apple-touch-icon.png    # Apple 触屏图标（180×180）
@@ -60,7 +65,7 @@ Echo 的个人主页 — 基于 **React 19 + TypeScript + Tailwind CSS v4** 构�
    ├─ hooks/
    │  ├─ useTheme.ts          # 三态主题（auto/dark/light）+ localStorage 持久化
    │  ├─ useTypewriter.ts     # 打字机效果（逐字打印/删除循环）
-   │  ├─ useWallpaper.ts      # 读取同源壁纸 JSON + 本地缓存兜底
+   │  ├─ useWallpaper.ts      # 三段式壁纸：缓存 → 快照 → api 每日刷新（日期比较 + 探针预加载）
    │  └─ useScrollProgress.ts # rAF 节流的滚动进度（0-1）
    └─ components/
       ├─ FirstScreen.tsx      # 首屏：壁纸 + 打字机名字 + 介绍卡片
@@ -77,15 +82,16 @@ Echo 的个人主页 — 基于 **React 19 + TypeScript + Tailwind CSS v4** 构�
 
 ## ⚙️ 关键实现
 
-### 壁纸管线（构建时注入）
+### 壁纸管线（快照兜底 + 边缘每日刷新）
 
-壁纸不在运行时请求第三方 API，而是在构建时抓取：
+壁纸分两层：构建时快照负责「快」（首屏 preload 即热图，也是最终兜底），Cloudflare Pages Functions 负责「新」（运行时每日更换）：
 
 1. `scripts/fetch-wallpaper.mjs` 从 Bing 官方 `HPImageArchive` 接口抓取当日 1920×1080 壁纸，把图片本体下载到 `public/wallpaper.jpg`（原子写入），并把日期/版权写入 `public/wallpaper.json`（`url` 指向同源 `/wallpaper.jpg`）；
 2. `vite.config.ts` 的 `wallpaperPreload` 插件读取该 JSON，把壁纸 URL 注入 `index.html` 的 `<link rel="preload" as="image" fetchpriority="low">`；
-3. 运行时 `useWallpaper` 只需 `fetch('/wallpaper.json')`，壁纸图随 HTML 解析阶段同源并行下载，任何网络环境都不受第三方域名可用性影响。
+3. 运行时 `useWallpaper` 先同步读 `localStorage` 缓存、再 `fetch('/wallpaper.json')`，壁纸图随 HTML 解析阶段同源并行下载，任何网络环境都不受第三方域名可用性影响（快照失败则用缓存兜底，与历史行为一致）；
+4. 渲染后后台请求 `/api/wallpaper`（`functions/api/wallpaper.js` 边缘代取 Bing，服务端 fetch 不受 CORS 约束），返回与快照同构的 `{date,url,copyright}`；仅当 `date` 严格更新时，探针预加载 `/api/wallpaper-image/<id>` 成功后才换图（图片本体由 `functions/api/wallpaper-image/[[path]].js` 流式代理，最终同源加载）；标签页从后台回前台时重查。本地 dev / preview 无 functions 环境时该请求 404，静默降级到快照。
 
-> 官方 API 无 CORS 头，浏览器直接 `fetch` 会被拦截；且把运行时对 `www.bing.com` 图片 CDN 的跨域依赖搬到构建机，既消除了 11.6s 级串行 API 等待，也避免了部分网络环境下第三方图被拦截导致壁纸不显示的问题。抓取或下载失败时保留已有 `wallpaper.json` / `wallpaper.jpg`，构建不中断；从未成功过则页面回退首屏纯底色。
+> 官方 API 无 CORS 头，浏览器直接 `fetch` 会被拦截——因此运行时的新鲜度与图片都必须经本站 functions 代理，前端绝不直连 `bing.com`。JSON 缓存 `s-maxage=1800`（边缘 30 分钟内收敛到新日期）+ 图片 URL 内容寻址（每日不同 → `immutable` 缓存一年），回源量 ≈ 每 PoP 每 30 分钟 1 次，远低于免费额度；错误响应一律 `no-store`。抓取或下载失败时保留已有 `wallpaper.json` / `wallpaper.jpg`，构建不中断；从未成功过则页面回退首屏纯底色。更改壁纸市场（`mkt`）需同步改 `functions/api/wallpaper.js` 与 `scripts/fetch-wallpaper.mjs` 两处常量。
 
 ### 主题系统
 
@@ -118,13 +124,23 @@ npm run preview    # 本地预览构建产物
 - **构建命令**：`npm run build`
 - **输出目录**：`dist`
 
+`functions/` 目录随 Git 集成构建**自动部署**（Pages Functions 按文件路径自动路由 `/api/*`），无需任何额外配置；`_headers` 不作用于 Functions 响应，缓存与安全头由函数自身设置。
+
+本地验证 Functions：
+
+```bash
+npm run build && npx wrangler pages dev dist --compatibility-date=2026-06-10   # 然后 curl localhost:8788/api/wallpaper
+```
+
+（旧版 wrangler 内置 workerd 支持的兼容日期可能落后于当天，未指定时本地启动会报 `requires compatibility date`——加 `--compatibility-date` 固定到其支持范围即可，本项目只用标准 Web API，与日期无关；线上 Pages 由平台管理兼容日期，无需此参数。`vite dev` / `vite preview` 下无 Functions 运行时，`/api/wallpaper` 会 404 或被 SPA fallback 返回 index.html，前端 JSON 解析失败后静默降级，页面照常显示快照壁纸。）
+
 ### Cloudflare Pages（Wrangler CLI）
 
 ```bash
-npx wrangler pages deploy dist/
+npx wrangler pages deploy dist/    # 自动带上项目根的 functions/ 目录
 ```
 
-> 壁纸为「构建时抓取」，想保持每日新鲜可让部署平台（Cloudflare Pages / GitHub Actions）每日定时触发一次构建。
+> 壁纸快照为「构建时抓取」，想让它也保持每日新鲜（可选，锦上添花）：在 Cloudflare Dashboard 的 Pages 项目下创建 Deploy Hook，把 hook URL 存为仓库 secret `CF_DEPLOY_HOOK`，`.github/workflows/daily-wallpaper.yml` 会每日（北京时间 00:30）触发一次重建；也可手动在 Actions 页触发 `workflow_dispatch`。
 
 ## 📄 License
 

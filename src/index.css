@@ -32,20 +32,28 @@
 /* ============ 明亮主题（默认） ============ */
 :root {
   --bg-body: #e8e8ed;
-  --bg-second-screen: rgba(255, 255, 255, 0.55);
+  --bg-second-screen: rgba(255, 255, 255, 0.5);
   --text-primary: #1d1d1f;
   --text-secondary: #555;
   --text-on-glass: #1d1d1f;
   --glass-bg: rgba(255, 255, 255, 0.2);
   --glass-bg-strong: rgba(255, 255, 255, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-border: rgba(255, 255, 255, 0.35);
+  /* 玻璃质感：顶部高光边 + 模糊/饱和参数 */
+  --glass-highlight: rgba(255, 255, 255, 0.6);
+  --glass-saturate: 180%;
+  --glass-blur: 20px;
+  --screen-blur: 16px;
   --card-bg: rgba(255, 255, 255, 0.4);
   --card-hover-bg: rgba(255, 255, 255, 0.65);
-  --shadow-sm: rgba(0, 0, 0, 0.06);
-  --shadow-md: rgba(0, 0, 0, 0.1);
-  --shadow-lg: rgba(0, 0, 0, 0.15);
+  /* 层次阴影（组合 stack：贴近投影 + 环境投影） */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.1);
   --sbti-accent: #6366f1;
   --sbti-accent-light: rgba(99, 102, 241, 0.12);
+  /* 第二屏顶部装饰光晕 */
+  --accent-glow: rgba(99, 102, 241, 0.12);
   --toggle-bg: rgba(0, 0, 0, 0.06);
   --toggle-text: #1d1d1f;
   --divider: rgba(0, 0, 0, 0.08);
@@ -55,24 +63,37 @@
 /* ============ 暗黑主题（手动 dark 或 auto + 系统暗黑） ============ */
 .dark {
   --bg-body: #0f0f1a;
-  --bg-second-screen: rgba(20, 20, 40, 0.78);
+  --bg-second-screen: rgba(20, 20, 40, 0.72);
   --text-primary: #e8e8f0;
   --text-secondary: #9a9ab0;
   --text-on-glass: #e8e8f0;
   --glass-bg: rgba(40, 40, 65, 0.5);
   --glass-bg-strong: rgba(40, 40, 65, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.12);
+  --glass-saturate: 150%;
+  --glass-blur: 20px;
+  --screen-blur: 16px;
   --card-bg: rgba(35, 35, 60, 0.55);
   --card-hover-bg: rgba(45, 45, 75, 0.75);
-  --shadow-sm: rgba(0, 0, 0, 0.25);
-  --shadow-md: rgba(0, 0, 0, 0.35);
-  --shadow-lg: rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.35);
   --sbti-accent: #818cf8;
   --sbti-accent-light: rgba(129, 140, 248, 0.15);
+  --accent-glow: rgba(129, 140, 248, 0.1);
   --toggle-bg: rgba(255, 255, 255, 0.08);
   --toggle-text: #e8e8f0;
   --divider: rgba(255, 255, 255, 0.08);
   --first-screen-bg: #0a0a14;
+}
+
+/* ============ 移动端性能折中：backdrop-filter 面积大，降低模糊半径 ============ */
+@media (max-width: 480px) {
+  :root {
+    --glass-blur: 12px;
+    --screen-blur: 8px;
+  }
 }
 
 @layer base {
@@ -86,8 +107,65 @@
 }
 
 @layer components {
+  /**
+   * 毛玻璃基础类（Apple 风升级版）：
+   * - backdrop-filter: blur + saturate 组合，背景色更通透、色彩更鲜活
+   * - ::before 以渐变 ring 模拟顶部 1px 高光边（mask-composite 裁成环状，
+   *   不支持 mask-composite 时退化为卡片顶部淡淡的高光洗刷，视觉无害）
+   * - 静止阴影用 --shadow-sm 层次 stack；hover 由各使用处 shadow-glass-md 替换
+   */
   .glass {
-    @apply rounded-[20px] border border-glass-border bg-glass backdrop-blur-[20px];
+    position: relative;
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    box-shadow: var(--shadow-sm);
+  }
+
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(180deg, var(--glass-highlight) 0%, transparent 45%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
+
+  /* 整屏毛玻璃面板（第二屏 section）：blur 半径独立变量，避免与卡片过度堆叠 */
+  .screen-glass {
+    -webkit-backdrop-filter: blur(var(--screen-blur));
+    backdrop-filter: blur(var(--screen-blur));
+  }
+
+  /* 进入视口淡入上浮动画（配合 Reveal 组件的 .is-visible 触发） */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 减少动态偏好：关闭 reveal 动画，内容直接可见 */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

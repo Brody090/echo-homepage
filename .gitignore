@@ -8,6 +8,9 @@ dist/
 # AgentTeams 运行时状态
 .agent-teams/
 
+# Wrangler 本地状态缓存
+.wrangler/
+
 # Editor
 .idea/
 .vscode/*

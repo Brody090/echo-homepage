@@ -1,0 +1,22 @@
+# 每日刷新构建时壁纸快照(方案 B1,见 WALLPAPER-DAILY-DESIGN.md §7)
+#
+# Functions 已负责运行时"每日更换";本工作流是锦上添花——每日触发一次
+# Cloudflare Pages 重建,让 public/wallpaper.json + wallpaper.jpg 快照
+# 也保持当日(首屏 preload 的热图即当日图,api 挂掉时兜底图不过时)。
+#
+# 使用前需在 Cloudflare Dashboard → Pages 项目 → Settings → Builds & deployments
+# → Deploy hooks 创建一个 hook,并把 hook URL 存为仓库 secret CF_DEPLOY_HOOK。
+name: Daily Wallpaper Refresh
+
+on:
+  schedule:
+    # UTC 16:30 = 北京时间 00:30,Bing zh-CN 每日换图之后
+    - cron: '30 16 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare Pages rebuild via Deploy Hook
+        run: curl -fsS -X POST "${{ secrets.CF_DEPLOY_HOOK }}"

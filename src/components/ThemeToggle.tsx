@@ -20,7 +20,7 @@ export function ThemeToggle() {
       aria-label="切换暗黑模式"
       title={title}
       data-mode={mode}
-      className="fixed right-5 top-5 z-[200] flex h-[42px] w-[42px] cursor-pointer items-center justify-center rounded-full border border-glass-border bg-glass p-0 text-[1.1rem] leading-none backdrop-blur-[12px] transition-transform duration-300 hover:scale-110 active:scale-95 max-[480px]:right-[14px] max-[480px]:top-[14px] max-[480px]:h-9 max-[480px]:w-9 max-[480px]:text-base [&[data-mode='auto']]:border-dashed"
+      className="fixed right-5 top-5 z-[200] flex h-[42px] w-[42px] cursor-pointer items-center justify-center rounded-full border border-glass-border bg-glass p-0 text-[1.1rem] leading-none backdrop-blur-[12px] backdrop-saturate-150 shadow-[inset_0_1px_0_0_var(--glass-highlight)] transition-transform duration-300 hover:scale-110 active:scale-95 max-[480px]:right-[14px] max-[480px]:top-[14px] max-[480px]:h-9 max-[480px]:w-9 max-[480px]:text-base [&[data-mode='auto']]:border-dashed"
     >
       {mode === 'auto' ? (
         <ComputerIcon />

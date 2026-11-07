@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { RefObject } from 'react';
 import {
   CONTACTS,
@@ -15,7 +16,7 @@ interface SecondScreenProps {
   targetRef: RefObject<HTMLDivElement | null>;
 }
 
-export function SecondScreen({ targetRef }: SecondScreenProps) {
+export const SecondScreen = memo(function SecondScreen({ targetRef }: SecondScreenProps) {
   return (
     <section className="screen-glass relative z-[2] min-h-screen bg-panel transition-colors duration-300">
       {/* 顶部装饰光晕（颜色走 CSS 变量，随主题切换） */}
@@ -94,4 +95,4 @@ export function SecondScreen({ targetRef }: SecondScreenProps) {
       </div>
     </section>
   );
-}
+});

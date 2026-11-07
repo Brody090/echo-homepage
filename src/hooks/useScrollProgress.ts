@@ -9,24 +9,22 @@ export function useScrollProgress() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    let ticking = false;
+    let frame: number | null = null;
 
     const update = () => {
-      ticking = false;
+      frame = null;
       setProgress(clamp(window.scrollY / window.innerHeight, 0, 1));
     };
 
     const onScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        window.requestAnimationFrame(update);
-      }
+      if (frame === null) frame = window.requestAnimationFrame(update);
     };
 
     update();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
     return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };

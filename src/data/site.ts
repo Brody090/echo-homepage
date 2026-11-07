@@ -3,12 +3,12 @@ import type { IconName } from '../components/icons';
 export const SITE_NAME = "Echo's Homepage";
 
 export const DESCRIPTION =
-  'Echo 的个人主页 — 一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。';
+  'Echo 的个人主页 — 一名高二编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。';
 
 /** 第二屏头部展示的主人名字与一句话介绍 */
 export const OWNER_NAME = 'Echo';
 export const OWNER_INTRO =
-  '一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。';
+  '一名高二编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。';
 
 /** 第二屏头部技能标签 */
 export const SKILLS = ['TypeScript', 'Python'];
@@ -48,12 +48,12 @@ export const CONTACTS: LinkItem[] = [
 
 export const PROJECTS: LinkItem[] = [
   {
-    icon: 'blogger-b',
-    label: '个人博客',
-    href: 'https://010912.top',
+    icon: 'image',
+    label: 'Echo 图床',
+    href: 'https://img.010912.top/',
     external: true,
-    description: '记录学习过程与生活碎片的自留地。',
-    tags: ['随笔', '技术'],
+    description: '图片托管与分享服务。',
+    tags: ['图床'],
   },
   {
     icon: 'stacked-email',

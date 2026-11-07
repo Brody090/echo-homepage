@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Echo's Homepage</title>
 
-  <!-- 资源提示：头像高优先级预加载（本页最核心的小图）；壁纸为同源 /wallpaper.jpg，
-       构建时由 vite 插件注入低优先级 preload；点击后才访问的域名只做廉价 dns-prefetch -->
+  <!-- 资源提示：头像高优先级预加载；响应式壁纸由 vite 插件注入同源 preload，
+       与 <img> 使用相同的 srcSet/sizes；点击后才访问的域名只做廉价 dns-prefetch -->
   <link rel="preload" as="image" href="/avatar.webp" fetchpriority="high">
   <link rel="dns-prefetch" href="https://t.me">
   <link rel="dns-prefetch" href="https://email.010912.top">
+  <link rel="dns-prefetch" href="https://img.010912.top">
 
   <!-- Primary Meta Tags -->
-  <meta name="description" content="Echo 的个人主页 — 一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。">
+  <meta name="description" content="Echo 的个人主页 — 一名高二编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。">
   <meta name="keywords" content="个人主页,编程,TypeScript,Python,Echo">
   <meta name="robots" content="index, follow">
   <meta name="author" content="Echo">
@@ -22,7 +23,7 @@
   <meta property="og:locale" content="zh_CN">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Echo's Homepage">
-  <meta property="og:description" content="Echo 的个人主页 — 一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。">
+  <meta property="og:description" content="Echo 的个人主页 — 一名高二编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。">
   <meta property="og:url" content="https://010912.top">
   <meta property="og:site_name" content="Echo's Homepage">
   <meta property="og:image" content="https://img.010912.top/file/网站相关/1784033194646_Github头像.webp">
@@ -32,7 +33,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Echo's Homepage">
-  <meta name="twitter:description" content="Echo 的个人主页 — 一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。">
+  <meta name="twitter:description" content="Echo 的个人主页 — 一名高二编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。">
   <meta name="twitter:image" content="https://img.010912.top/file/网站相关/1784033194646_Github头像.webp">
 
   <!-- JSON-LD Structured Data -->
@@ -43,7 +44,7 @@
       {
         "@type": "Person",
         "name": "Echo",
-        "description": "一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。",
+        "description": "一名高二编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。",
         "jobTitle": "学生",
         "url": "https://010912.top",
         "image": "https://img.010912.top/file/网站相关/1784033194646_Github头像.webp",
@@ -58,14 +59,14 @@
         "@type": "WebSite",
         "name": "Echo's Homepage",
         "url": "https://010912.top",
-        "description": "Echo 的个人主页 — 一名高一编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。",
+        "description": "Echo 的个人主页 — 一名高二编程爱好者，主攻 TypeScript 和 Python，以兴趣驱动开发。",
         "inLanguage": "zh-CN"
       }
     ]
   }
   </script>
 
-  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="/favicon-32-rounded.png" type="image/png" sizes="32x32">
 
   <!-- 浏览器 UI 主题色（明亮/暗黑各一套，浏览器根据用户系统偏好自动选择） -->
   <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">

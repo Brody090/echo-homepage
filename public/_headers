@@ -16,6 +16,15 @@
 /wallpaper.jpg
   Cache-Control: public, max-age=86400
 
+/wallpaper-1280.jpg
+  Cache-Control: public, max-age=86400
+
+/wallpaper-1920.jpg
+  Cache-Control: public, max-age=86400
+
+/favicon-32-rounded.png
+  Cache-Control: public, max-age=86400
+
 /favicon-32.png
   Cache-Control: public, max-age=86400
 

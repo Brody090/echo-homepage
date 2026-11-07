@@ -162,10 +162,17 @@
 
 /* 减少动态偏好：关闭 reveal 动画，内容直接可见 */
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+
   .reveal {
     opacity: 1;
     transform: none;
-    transition: none;
   }
 }
 

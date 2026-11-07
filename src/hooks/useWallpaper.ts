@@ -1,153 +1,101 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-interface WallpaperData {
+export interface WallpaperData {
   date: string;
   url: string;
-  copyright: string;
-}
-
-export interface WallpaperState {
-  src: string;
-  alt: string;
+  srcSet?: string;
   copyright: string;
 }
 
 const CACHE_KEY = 'echo-homepage-wallpaper';
-const FALLBACK_COPYRIGHT = 'Bing 每日壁纸';
-/** 边缘代理的当日壁纸接口(见 functions/api/wallpaper.js);本地 dev / preview 无 functions 环境时 404 → 静默降级 */
-const API_URL = '/api/wallpaper';
 
-/** date 均为 YYYY-MM-DD,ISO 字符串字典序 == 时间序 */
-const isNewer = (next: string, current: string) => next !== '' && next > current;
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function normalizeData(value: unknown): WallpaperData | null {
+  if (!isRecord(value) || typeof value.date !== 'string' || typeof value.url !== 'string') return null;
+  if (!value.date || !value.url) return null;
+  const srcSet = typeof value.srcSet === 'string' && value.srcSet.trim() ? value.srcSet : undefined;
+  return {
+    date: value.date,
+    url: value.url,
+    copyright: typeof value.copyright === 'string' && value.copyright ? value.copyright : 'Bing 每日壁纸',
+    ...(srcSet ? { srcSet } : {}),
+  };
+}
 
 function readCache(): WallpaperData | null {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const data = JSON.parse(raw) as Partial<WallpaperData>;
-    if (typeof data.url === 'string' && data.url) {
-      return {
-        date: typeof data.date === 'string' ? data.date : '',
-        url: data.url,
-        copyright:
-          typeof data.copyright === 'string' && data.copyright ? data.copyright : FALLBACK_COPYRIGHT,
-      };
-    }
+    return raw ? normalizeData(JSON.parse(raw)) : null;
   } catch {
-    /* 隐私模式 localStorage 不可用 / 缓存损坏:直接忽略 */
+    return null;
   }
-  return null;
+}
+
+function writeCache(data: WallpaperData) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch {
+    // 隐私模式 / 存储满时静默降级
+  }
+}
+
+async function fetchSnapshot(signal: AbortSignal): Promise<WallpaperData | null> {
+  const res = await fetch('/wallpaper.json', { cache: 'no-store', signal });
+  if (!res.ok) throw new Error(`snapshot HTTP ${res.status}`);
+  return normalizeData(await res.json());
+}
+
+async function fetchApi(signal: AbortSignal): Promise<WallpaperData | null> {
+  const res = await fetch('/api/wallpaper', { signal });
+  if (!res.ok) throw new Error(`api HTTP ${res.status}`);
+  return normalizeData(await res.json());
 }
 
 /**
- * 壁纸三段式加载(WALLPAPER-DAILY-DESIGN.md §5):
- * ① 同步读 localStorage 缓存 → 有则立即渲染(0 等待占位)
- * ② fetch('/wallpaper.json') 同源快照(构建时注入,兜底 + preload 热图) → 仅日期更新时应用
- * ③ 后台 fetch('/api/wallpaper')(Cloudflare Pages Functions 边缘代理拿当日新图)
- *    仅当日期严格更新:探针预加载成功后才换图并写缓存;失败静默保持当前画面(绝不破图)
- *
- * 降级链:localStorage → 快照 → api 新图 → 保持现状,任何单点失败都不比历史行为更糟。
- * 所有第三方请求均经本站 functions,前端绝不直连 bing.com。
+ * 三段式壁纸加载：localStorage 缓存 → 静态快照 → API 当日更新。
+ * 缓存、快照与 API 均带 srcSet，由 <img> 按设备宽度选择资源。
+ * 元数据请求可取消；图片加载状态由 Wallpaper 按资源键管理，避免切换时闪烁或卡在失败态。
  */
 export function useWallpaper() {
-  // 阶段 ①:同步读缓存(useState 惰性初始化仅在首渲染执行一次)
-  const [initialCache] = useState<WallpaperData | null>(readCache);
-  const [state, setState] = useState<WallpaperState>(() => ({
-    src: initialCache?.url ?? '',
-    alt: initialCache?.copyright ?? '',
-    copyright: initialCache?.copyright ?? '加载中...',
-  }));
-  /** 镜像当前 date,供异步回调做日期比较(避免闭包旧值) */
-  const dateRef = useRef<string>(initialCache?.date ?? '');
+  // 只在挂载时读取一次，避免滚动引发父组件渲染时重复访问 localStorage。
+  const [cached] = useState(readCache);
+  const [current, setCurrent] = useState<WallpaperData | null>(cached);
 
   useEffect(() => {
     let cancelled = false;
+    const controller = new AbortController();
 
-    const apply = (data: WallpaperData) => {
-      if (cancelled) return;
-      dateRef.current = data.date;
-      setState({
-        src: data.url,
-        alt: data.copyright,
-        copyright: data.copyright,
-      });
+    const boot = async () => {
       try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        const snap = await fetchSnapshot(controller.signal);
+        if (cancelled) return;
+        if (snap) setCurrent(snap);
+
+        // 快照与缓存完全一致时不重复请求 API；旧缓存缺少 srcSet 时仍升级。
+        if (cached && snap && cached.date === snap.date && cached.srcSet === snap.srcSet) return;
+
+        const fresh = await fetchApi(controller.signal);
+        if (cancelled || !fresh) return;
+        // 同一天已有响应式快照时继续用本地图，避免首屏快照与边缘图重复下载。
+        if (snap?.srcSet && fresh.date === snap.date) {
+          writeCache(snap);
+          return;
+        }
+        setCurrent(fresh);
+        writeCache(fresh);
       } catch {
-        /* 隐私模式等场景 localStorage 不可用,忽略 */
+        // 保留缓存或纯色背景；图片自身加载失败由 Wallpaper 降级。
       }
     };
-
-    // 快照/api 数据仅当日期严格更新才升级(同日期一律不换,避免白费一次换图)
-    const applyIfNewer = (data: WallpaperData) => {
-      if (isNewer(data.date, dateRef.current)) apply(data);
-    };
-
-    // 阶段 ②:同源快照(现有链路,保留原样,仅把 apply 改为带日期比较)
-    fetch('/wallpaper.json', { cache: 'default' })
-      .then(res => {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json() as Promise<Partial<WallpaperData>>;
-      })
-      .then(data => {
-        if (!data || typeof data.url !== 'string' || !data.url) {
-          throw new Error('no wallpaper url');
-        }
-        applyIfNewer({
-          date: data.date ?? '',
-          url: data.url,
-          copyright: data.copyright ?? FALLBACK_COPYRIGHT,
-        });
-      })
-      .catch(err => {
-        console.warn('壁纸获取失败，使用本地缓存兜底:', err?.message ?? err);
-        if (cancelled) return;
-        // 缓存已在阶段 ① 应用;仅当画面仍为空(无缓存)时落回纯色占位
-        setState(prev => (prev.src ? prev : { src: '', alt: FALLBACK_COPYRIGHT, copyright: FALLBACK_COPYRIGHT }));
-      });
-
-    // 阶段 ③:后台拿当日新鲜度(不阻塞首屏);标签页 hidden→visible 时重查(覆盖跨夜打开场景)
-    const refreshFromApi = () => {
-      fetch(API_URL, { cache: 'default' })
-        .then(res => {
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          return res.json() as Promise<Partial<WallpaperData>>;
-        })
-        .then(data => {
-          if (!data || typeof data.url !== 'string' || !data.url) {
-            throw new Error('bad api payload');
-          }
-          if (cancelled) return;
-          const next: WallpaperData = {
-            date: data.date ?? '',
-            url: data.url,
-            copyright: data.copyright ?? FALLBACK_COPYRIGHT,
-          };
-          if (!isNewer(next.date, dateRef.current)) return; // 不比当前新 → 忽略,不换图不重复下载
-          // 探针预加载:新 URL 真正加载成功才切换,失败静默保持当前画面(防纯色/破图)
-          const probe = new Image();
-          probe.onload = () => apply(next);
-          probe.onerror = () => {
-            /* 保持当前画面(快照/缓存),静默 */
-          };
-          probe.src = next.url;
-        })
-        .catch(err => {
-          // 本地 dev / vite preview 无 functions(404),或线上 502/超时:静默保持快照画面
-          if (import.meta.env.DEV) console.warn('api 壁纸刷新不可用，保持快照:', err?.message ?? err);
-        });
-    };
-    refreshFromApi();
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') refreshFromApi();
-    };
-    document.addEventListener('visibilitychange', onVisible);
-
+    void boot();
     return () => {
       cancelled = true;
-      document.removeEventListener('visibilitychange', onVisible);
+      controller.abort();
     };
-  }, []);
+  }, [cached]);
 
-  return state;
+  return { data: current };
 }

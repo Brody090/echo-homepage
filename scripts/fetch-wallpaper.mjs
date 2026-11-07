@@ -1,37 +1,34 @@
-// 构建时从 Bing 官方壁纸 API 抓取当日壁纸（优先 UHD 3840×2160，失败回退原始分辨率），写入 public/wallpaper.json。
-//
-// 为什么在构建时抓而不是运行时抓：
-// - 官方 HPImageArchive 响应无 CORS 头，浏览器 fetch 会被拦截（第三方代理又慢且是单点）
-// - 构建时注入后，壁纸 URL 随 index.html 以 preload 方式下发（vite.config.ts 注入），
-//   壁纸图在 HTML 阶段即并行下载，LCP 关键路径不再经过 JS → API 串行等待
-//
-// 清晰度说明：Bing 接口返回的 url 默认带 _1920x1080.jpg 分辨率后缀，
-// 替换为 _UHD.jpg 即可拿到 3840×2160（4K）原图，大屏/高分屏不再模糊。
-// 个别图片无 UHD 版本时回退到接口原始分辨率，保证快照永远可用。
-//
-// 失败策略：保留已有的 wallpaper.json（构建不中断）；若从未成功过，页面回退到首屏底色。
-// 想保持每日新鲜：让部署平台（CF Pages / GitHub Action）每日触发一次构建即可。
+// 构建时从 Bing 官方壁纸 API 抓取当日壁纸，生成 1280 / 1920 / UHD 多尺寸本地快照。
+// 前端通过 srcSet 按设备选择，避免手机一律下载 4K；所有图片均为同源静态资源。
+// 抓取失败时保留已有快照，构建不中断；从未成功过则页面回退首屏纯底色。
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
-const OUT = join(ROOT, 'public', 'wallpaper.json');
-const IMG_OUT = join(ROOT, 'public', 'wallpaper.jpg');
-const IMG_TMP = join(ROOT, 'public', 'wallpaper.jpg.tmp');
+const PUBLIC_DIR = join(ROOT, 'public');
+const OUT = join(PUBLIC_DIR, 'wallpaper.json');
 const API = 'https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN';
 const UA = 'Mozilla/5.0 (echo-homepage build)';
+const VARIANTS = [
+  { resolution: '1280x720', width: 1280, file: 'wallpaper-1280.jpg' },
+  { resolution: '1920x1080', width: 1920, file: 'wallpaper-1920.jpg' },
+  { resolution: 'UHD', width: 3840, file: 'wallpaper.jpg' },
+].map(variant => ({
+  ...variant,
+  out: join(PUBLIC_DIR, variant.file),
+  tmp: join(PUBLIC_DIR, `${variant.file}.tmp`),
+}));
 
 function formatDate(yyyymmdd) {
   return `${yyyymmdd.slice(0, 4)}-${yyyymmdd.slice(4, 6)}-${yyyymmdd.slice(6, 8)}`;
 }
 
-/** 把 Bing 图片 URL 里的分辨率后缀（如 _1920x1080.jpg）升级为 UHD（3840×2160） */
-function toUhdUrl(url) {
-  return url.replace(/([?&]id=[^&]*?)_\d+x\d+\.jpg/, '$1_UHD.jpg');
+function toResolutionUrl(url, resolution) {
+  return url.replace(/([?&]id=[^&]*?)_(?:\d+x\d+|UHD)\.jpg/, `$1_${resolution}.jpg`);
 }
 
-/** 下载图片本体，校验大小；失败抛错由调用方决定回退 */
+/** 下载图片本体并校验大小；失败抛错由调用方决定回退。 */
 async function downloadImage(url) {
   const res = await fetch(url, {
     headers: { 'User-Agent': UA },
@@ -41,6 +38,21 @@ async function downloadImage(url) {
   const buf = Buffer.from(await res.arrayBuffer());
   if (buf.length < 10_000) throw new Error(`image too small (${buf.length}B)`);
   return buf;
+}
+
+/** 非原始尺寸不可用时回退原图，但不把原图伪装成对应宽度的 srcSet 候选。 */
+async function downloadVariant(variant, originalUrl) {
+  const url = toResolutionUrl(originalUrl, variant.resolution);
+  try {
+    return {
+      buffer: await downloadImage(url),
+      source: `/${variant.file} ${variant.width}w`,
+    };
+  } catch (err) {
+    if (url === originalUrl) throw err;
+    console.warn(`[wallpaper] ${variant.resolution} fetch failed, using original image:`, err?.message ?? err);
+    return { buffer: await downloadImage(originalUrl), source: null };
+  }
 }
 
 try {
@@ -53,39 +65,32 @@ try {
   const image = data?.images?.[0];
   if (!image?.url || !image?.startdate) throw new Error('unexpected payload');
   const originalUrl = 'https://www.bing.com' + image.url;
-  const uhdUrl = toUhdUrl(originalUrl);
 
-  // 下载壁纸图本体到 public/wallpaper.jpg（同源加载，运行时零第三方请求；
-  // 依赖 bing.com 跨域图在部分网络环境下会被拦截导致壁纸不显示）
-  let buf;
-  try {
-    buf = await downloadImage(uhdUrl);
-  } catch (err) {
-    console.warn('[wallpaper] UHD fetch failed, falling back to original resolution:', err?.message ?? err);
-    buf = await downloadImage(originalUrl);
-  }
-  writeFileSync(IMG_TMP, buf);
-  renameSync(IMG_TMP, IMG_OUT);
+  // 三个尺寸并行下载；全部成功后才替换现有文件，避免部分失败破坏快照。
+  const results = await Promise.all(VARIANTS.map(variant => downloadVariant(variant, originalUrl)));
+  mkdirSync(PUBLIC_DIR, { recursive: true });
+  results.forEach((result, index) => writeFileSync(VARIANTS[index].tmp, result.buffer));
+  results.forEach((_, index) => renameSync(VARIANTS[index].tmp, VARIANTS[index].out));
 
   const payload = {
     date: formatDate(image.startdate),
     url: '/wallpaper.jpg',
+    srcSet: results.map(result => result.source).filter(Boolean).join(', '),
     copyright: image.copyright ?? 'Bing 每日壁纸',
   };
   const next = JSON.stringify(payload, null, 2) + '\n';
-  // 注意：不要 process.exit()——Node 24 on Windows 下 undici 连接未关闭时强制退出会触发 libuv 断言崩溃
+  // 不要 process.exit()：Node 24 on Windows 下 undici 连接未关闭时强制退出会触发 libuv 断言崩溃。
   if (existsSync(OUT) && readFileSync(OUT, 'utf8') === next) {
     console.log('[wallpaper] unchanged:', payload.date);
   } else {
-    mkdirSync(dirname(OUT), { recursive: true });
     writeFileSync(OUT, next, 'utf8');
-    console.log('[wallpaper] updated:', payload.date, '-', uhdUrl, '-> /wallpaper.jpg');
+    console.log('[wallpaper] updated:', payload.date, '- responsive local snapshots');
   }
 } catch (err) {
   const msg = err instanceof Error ? err.message : String(err);
-  rmSync(IMG_TMP, { force: true });
-  if (existsSync(OUT) && existsSync(IMG_OUT)) {
-    console.warn('[wallpaper] fetch failed, keeping existing wallpaper.json + wallpaper.jpg:', msg);
+  VARIANTS.forEach(variant => rmSync(variant.tmp, { force: true }));
+  if (existsSync(OUT) && existsSync(join(PUBLIC_DIR, 'wallpaper.jpg'))) {
+    console.warn('[wallpaper] fetch failed, keeping existing wallpaper snapshot:', msg);
   } else {
     console.warn('[wallpaper] fetch failed, no local wallpaper (page falls back to plain background):', msg);
   }

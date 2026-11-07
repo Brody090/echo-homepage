@@ -1,5 +1,6 @@
 {
-  "date": "2026-08-22",
+  "date": "2026-11-06",
   "url": "/wallpaper.jpg",
-  "copyright": "在处暑时节的村庄田野与寺庙佛塔，江阴市，江苏省，中国 (© jia yu/Getty Images)"
+  "srcSet": "/wallpaper-1280.jpg 1280w, /wallpaper-1920.jpg 1920w, /wallpaper.jpg 3840w",
+  "copyright": "草原上的一头野牛，西奥多·罗斯福国家公园，北达科他州，美国 (© Tandem Stock/Adobe Stock)"
 }

@@ -21,6 +21,13 @@ export function useTypewriter(names: string[]) {
   useEffect(() => {
     if (names.length === 0) return;
 
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const first = names[0];
+      textRef.current = first;
+      setText(first);
+      return;
+    }
+
     let timer: number | undefined;
     let cancelled = false;
     let currentNameIndex = 0;

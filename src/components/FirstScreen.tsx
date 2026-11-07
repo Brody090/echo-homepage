@@ -14,7 +14,7 @@ export function FirstScreen({ progress, originRef }: FirstScreenProps) {
 
   return (
     <section className="relative h-screen overflow-hidden bg-first transition-colors duration-300">
-      <Wallpaper src={wallpaper.src} alt={wallpaper.alt} />
+      <Wallpaper data={wallpaper.data} />
 
       {/* 随滚动淡出层 */}
       <div
@@ -33,9 +33,11 @@ export function FirstScreen({ progress, originRef }: FirstScreenProps) {
         </div>
 
         {/* 版权信息（毛玻璃小框，底部角落；移动端居中换行） */}
-        <div className="glass absolute bottom-6 right-6 max-w-[70vw] truncate whitespace-nowrap px-5 py-2.5 text-[0.85rem] text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.45)] max-[480px]:bottom-4 max-[480px]:left-1/2 max-[480px]:max-w-[90vw] max-[480px]:-translate-x-1/2 max-[480px]:px-[14px] max-[480px]:py-2 max-[480px]:text-[0.72rem] max-[480px]:whitespace-normal max-[480px]:text-center">
-          {wallpaper.copyright}
-        </div>
+        {wallpaper.data && (
+          <div className="glass absolute bottom-6 right-6 max-w-[70vw] truncate whitespace-nowrap px-5 py-2.5 text-[0.85rem] text-white [text-shadow:0_1px_4px_rgba(0,0,0,0.45)] max-[480px]:bottom-4 max-[480px]:left-1/2 max-[480px]:max-w-[90vw] max-[480px]:-translate-x-1/2 max-[480px]:px-[14px] max-[480px]:py-2 max-[480px]:text-[0.72rem] max-[480px]:whitespace-normal max-[480px]:text-center">
+            {wallpaper.data.copyright}
+          </div>
+        )}
       </div>
     </section>
   );

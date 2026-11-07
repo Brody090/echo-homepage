@@ -10,7 +10,7 @@ interface LinkCardProps {
 function IconBadge({ item }: { item: LinkItem }) {
   const IconComponent = ICONS[item.icon];
   return (
-    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[1.05rem] text-accent transition-transform duration-300 group-hover:scale-110 min-[481px]:h-11 min-[481px]:w-11 min-[481px]:text-[1.15rem]">
+    <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-[1.05rem] text-accent transition-transform duration-300 group-hover:scale-110 min-[481px]:h-11 min-[481px]:w-11 min-[481px]:text-[1.15rem]">
       <IconComponent />
     </span>
   );
@@ -19,11 +19,17 @@ function IconBadge({ item }: { item: LinkItem }) {
 export function LinkCard({ item, layout = 'row' }: LinkCardProps) {
   const commonProps = {
     href: item.href,
-    ...(item.external ? { target: '_blank', rel: 'noopener' } : {}),
+    ...(item.external
+      ? {
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          'aria-label': `${item.label}（新窗口打开）`,
+        }
+      : {}),
   };
 
   const base =
-    'glass group flex cursor-pointer items-center gap-4 py-4 pl-4 pr-4 text-[0.9rem] font-medium text-ink-glass no-underline transition-[translate,box-shadow,background] duration-300 hover:-translate-y-1 hover:bg-card-hover hover:shadow-glass-md min-[481px]:py-5 min-[481px]:text-[0.95rem]';
+    'glass group flex cursor-pointer items-center gap-4 py-4 pl-4 pr-4 text-[0.9rem] font-medium text-ink-glass no-underline transition-[translate,box-shadow,background] duration-300 hover:-translate-y-1 hover:bg-card-hover hover:shadow-glass-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent min-[481px]:py-5 min-[481px]:text-[0.95rem]';
 
   const meta = item.description ? (
     <span className="block truncate text-[0.72rem] font-normal leading-snug text-ink-soft min-[481px]:text-[0.78rem]">

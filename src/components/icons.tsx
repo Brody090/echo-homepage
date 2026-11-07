@@ -148,6 +148,17 @@ export function BloggerBIcon({ className }: IconProps) {
   );
 }
 
+export function ImageRoundedIcon({ className }: IconProps) {
+  return (
+    <Svg viewBox="0 0 24 24" className={className}>
+      <path
+        fill="currentColor"
+        d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v14q0 .825-.587 1.413T19 21H5Zm0-2h14V5H5v14Zm1-2h12l-3.75-5-3 4L9 13l-3 4Zm-1 2V5v14Z"
+      />
+    </Svg>
+  );
+}
+
 /** 图标名 -> 组件映射（数据文件用短名引用，避免字符串漂移） */
 export type IconName =
   | 'mail'
@@ -159,7 +170,8 @@ export type IconName =
   | 'ibm-cloud-projects'
   | 'stacked-email'
   | 'time-rewind'
-  | 'blogger-b';
+  | 'blogger-b'
+  | 'image';
 
 export const ICONS: Record<IconName, FC<IconProps>> = {
   mail: MailRoundedIcon,
@@ -172,4 +184,5 @@ export const ICONS: Record<IconName, FC<IconProps>> = {
   'stacked-email': StackedEmailOutlineRoundedIcon,
   'time-rewind': TimeRewindIcon,
   'blogger-b': BloggerBIcon,
+  image: ImageRoundedIcon,
 };

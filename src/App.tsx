@@ -6,7 +6,8 @@ import { ThemeToggle } from './components/ThemeToggle';
 import { useScrollProgress } from './hooks/useScrollProgress';
 
 export default function App() {
-  const progress = useScrollProgress();
+  const firstScreenRef = useRef<HTMLElement>(null);
+  const progress = useScrollProgress(firstScreenRef);
   const originRef = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLDivElement>(null);
 
@@ -14,7 +15,7 @@ export default function App() {
     <>
       <ThemeToggle />
       <SharedAvatar progress={progress} originRef={originRef} targetRef={targetRef} />
-      <FirstScreen progress={progress} originRef={originRef} />
+      <FirstScreen progress={progress} originRef={originRef} sectionRef={firstScreenRef} />
       <SecondScreen targetRef={targetRef} />
     </>
   );

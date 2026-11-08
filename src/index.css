@@ -122,8 +122,8 @@
     animation: heroItemEnter 850ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
   }
 
-  .hero-description-card,
-  .wallpaper-credit {
+  .glass.hero-description-card,
+  .glass.wallpaper-credit {
     background: rgba(9, 26, 47, 0.52);
     border-color: rgba(226, 239, 255, 0.34);
     -webkit-backdrop-filter: blur(12px) saturate(150%);
@@ -150,9 +150,7 @@
         linear-gradient(90deg, rgba(5, 20, 39, 0.12), transparent 70%);
     }
 
-    .hero-description-card {
-      background: rgba(9, 26, 47, 0.52);
-      border-color: rgba(226, 239, 255, 0.34);
+    .glass.hero-description-card {
       -webkit-backdrop-filter: blur(10px) saturate(150%);
       backdrop-filter: blur(10px) saturate(150%);
     }

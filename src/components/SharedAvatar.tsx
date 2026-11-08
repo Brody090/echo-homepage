@@ -34,7 +34,13 @@ export function SharedAvatar({ progress, originRef, targetRef }: SharedAvatarPro
       const documentY = anchors.originY + (anchors.targetY - anchors.originY) * ratio;
       const x = documentX - window.scrollX;
       const y = documentY - window.scrollY;
-      avatar.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+      const width = avatar.offsetWidth;
+      const height = avatar.offsetHeight;
+      const pixelRatio = window.devicePixelRatio || 1;
+      const snapToPixel = ratio === 0 || ratio === 1;
+      const left = snapToPixel ? Math.round((x - width / 2) * pixelRatio) / pixelRatio : x - width / 2;
+      const top = snapToPixel ? Math.round((y - height / 2) * pixelRatio) / pixelRatio : y - height / 2;
+      avatar.style.transform = `translate3d(${left}px, ${top}px, 0)`;
     },
     [reducedMotion],
   );

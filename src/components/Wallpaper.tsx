@@ -22,7 +22,11 @@ export const Wallpaper = memo(function Wallpaper({ data }: WallpaperProps) {
       key={sourceKey}
       src={data.url}
       srcSet={data.srcSet}
-      sizes={data.srcSet ? '100vw' : undefined}
+      sizes={
+        data.srcSet
+          ? '(max-width: 480px) and (orientation: portrait) 178vh, (max-width: 480px) 100vw, 100vw'
+          : undefined
+      }
       alt=""
       aria-hidden="true"
       decoding="async"

@@ -28,7 +28,12 @@ function wallpaperPreload(): Plugin {
                 as: 'image',
                 href: data.url,
                 fetchpriority: 'high',
-                ...(data.srcSet ? { imagesrcset: data.srcSet, imagesizes: '100vw' } : {}),
+                ...(data.srcSet
+                  ? {
+                      imagesrcset: data.srcSet,
+                      imagesizes: '(max-width: 480px) and (orientation: portrait) 178vh, (max-width: 480px) 100vw, 100vw',
+                    }
+                  : {}),
               },
               injectTo: 'head-prepend',
             },

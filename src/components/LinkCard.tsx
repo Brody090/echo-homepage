@@ -29,7 +29,7 @@ export function LinkCard({ item, layout = 'row' }: LinkCardProps) {
   };
 
   const base =
-    'glass group flex cursor-pointer items-center gap-4 py-4 pl-4 pr-4 text-[0.9rem] font-medium text-ink-glass no-underline transition-[translate,box-shadow,background] duration-300 hover:-translate-y-1 hover:bg-card-hover hover:shadow-glass-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent min-[481px]:py-5 min-[481px]:text-[0.95rem]';
+    'glass group flex cursor-pointer items-center gap-4 py-4 pl-4 pr-4 text-[0.9rem] font-medium text-ink-glass no-underline transition-[translate,box-shadow,background] duration-300 hover:-translate-y-1 hover:bg-card-hover hover:shadow-glass-md active:translate-y-0 active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent motion-reduce:transition-none min-[481px]:py-5 min-[481px]:text-[0.95rem]';
 
   const meta = item.description ? (
     <span className="block truncate text-[0.72rem] font-normal leading-snug text-ink-soft min-[481px]:text-[0.78rem]">

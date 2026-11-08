@@ -31,61 +31,61 @@
 
 /* ============ 明亮主题（默认） ============ */
 :root {
-  --bg-body: #e8e8ed;
-  --bg-second-screen: rgba(255, 255, 255, 0.5);
-  --text-primary: #1d1d1f;
-  --text-secondary: #555;
-  --text-on-glass: #1d1d1f;
-  --glass-bg: rgba(255, 255, 255, 0.2);
-  --glass-bg-strong: rgba(255, 255, 255, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.35);
+  --bg-body: #e9eff7;
+  --bg-second-screen: rgba(255, 255, 255, 0.58);
+  --text-primary: #17283d;
+  --text-secondary: #53657b;
+  --text-on-glass: #17283d;
+  --glass-bg: rgba(255, 255, 255, 0.22);
+  --glass-bg-strong: rgba(255, 255, 255, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.42);
   /* 玻璃质感：顶部高光边 + 模糊/饱和参数 */
-  --glass-highlight: rgba(255, 255, 255, 0.6);
+  --glass-highlight: rgba(255, 255, 255, 0.72);
   --glass-saturate: 180%;
   --glass-blur: 20px;
   --screen-blur: 16px;
-  --card-bg: rgba(255, 255, 255, 0.4);
-  --card-hover-bg: rgba(255, 255, 255, 0.65);
+  --card-bg: rgba(255, 255, 255, 0.46);
+  --card-hover-bg: rgba(255, 255, 255, 0.72);
   /* 层次阴影（组合 stack：贴近投影 + 环境投影） */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.1);
-  --sbti-accent: #6366f1;
-  --sbti-accent-light: rgba(99, 102, 241, 0.12);
+  --shadow-sm: 0 1px 2px rgba(14, 35, 64, 0.06), 0 4px 12px rgba(14, 35, 64, 0.05);
+  --shadow-md: 0 4px 14px rgba(14, 35, 64, 0.1), 0 1px 3px rgba(14, 35, 64, 0.07);
+  --shadow-lg: 0 10px 30px rgba(14, 35, 64, 0.16), 0 2px 8px rgba(14, 35, 64, 0.1);
+  --sbti-accent: #2563eb;
+  --sbti-accent-light: rgba(37, 99, 235, 0.13);
   /* 第二屏顶部装饰光晕 */
-  --accent-glow: rgba(99, 102, 241, 0.12);
-  --toggle-bg: rgba(0, 0, 0, 0.06);
-  --toggle-text: #1d1d1f;
-  --divider: rgba(0, 0, 0, 0.08);
-  --first-screen-bg: #1e2a3a;
+  --accent-glow: rgba(37, 99, 235, 0.14);
+  --toggle-bg: rgba(25, 65, 125, 0.08);
+  --toggle-text: #1c3554;
+  --divider: rgba(28, 64, 112, 0.12);
+  --first-screen-bg: #193858;
 }
 
 /* ============ 暗黑主题（手动 dark 或 auto + 系统暗黑） ============ */
 .dark {
-  --bg-body: #0f0f1a;
-  --bg-second-screen: rgba(20, 20, 40, 0.72);
-  --text-primary: #e8e8f0;
-  --text-secondary: #9a9ab0;
-  --text-on-glass: #e8e8f0;
-  --glass-bg: rgba(40, 40, 65, 0.5);
-  --glass-bg-strong: rgba(40, 40, 65, 0.65);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-highlight: rgba(255, 255, 255, 0.12);
+  --bg-body: #091321;
+  --bg-second-screen: rgba(12, 28, 48, 0.78);
+  --text-primary: #e8f1ff;
+  --text-secondary: #a5bad4;
+  --text-on-glass: #e8f1ff;
+  --glass-bg: rgba(19, 43, 70, 0.62);
+  --glass-bg-strong: rgba(24, 53, 86, 0.76);
+  --glass-border: rgba(178, 211, 255, 0.17);
+  --glass-highlight: rgba(214, 232, 255, 0.16);
   --glass-saturate: 150%;
   --glass-blur: 20px;
   --screen-blur: 16px;
-  --card-bg: rgba(35, 35, 60, 0.55);
-  --card-hover-bg: rgba(45, 45, 75, 0.75);
+  --card-bg: rgba(19, 42, 68, 0.68);
+  --card-hover-bg: rgba(29, 59, 92, 0.82);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 14px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.35);
-  --sbti-accent: #818cf8;
-  --sbti-accent-light: rgba(129, 140, 248, 0.15);
-  --accent-glow: rgba(129, 140, 248, 0.1);
-  --toggle-bg: rgba(255, 255, 255, 0.08);
-  --toggle-text: #e8e8f0;
-  --divider: rgba(255, 255, 255, 0.08);
-  --first-screen-bg: #0a0a14;
+  --sbti-accent: #60a5fa;
+  --sbti-accent-light: rgba(96, 165, 250, 0.17);
+  --accent-glow: rgba(96, 165, 250, 0.16);
+  --toggle-bg: rgba(179, 211, 255, 0.12);
+  --toggle-text: #e8f1ff;
+  --divider: rgba(178, 211, 255, 0.12);
+  --first-screen-bg: #07111e;
 }
 
 /* ============ 移动端性能折中：backdrop-filter 面积大，降低模糊半径 ============ */
@@ -104,9 +104,71 @@
   body {
     @apply overflow-x-hidden bg-body font-sans text-ink transition-colors duration-300;
   }
+
+  ::selection {
+    color: #fff;
+    background: #2563eb;
+  }
 }
 
 @layer components {
+  .wallpaper-shade {
+    background:
+      linear-gradient(180deg, rgba(5, 20, 39, 0.18) 0%, transparent 28%, transparent 72%, rgba(5, 20, 39, 0.34) 100%),
+      linear-gradient(90deg, rgba(5, 20, 39, 0.16), transparent 72%);
+  }
+
+  .hero-item-enter {
+    animation: heroItemEnter 850ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .hero-description-card,
+  .wallpaper-credit {
+    background: rgba(9, 26, 47, 0.52);
+    border-color: rgba(226, 239, 255, 0.34);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    backdrop-filter: blur(12px) saturate(150%);
+  }
+
+  .hero-item-enter-delayed {
+    animation-delay: 120ms;
+  }
+
+  @media (max-width: 480px) {
+    .hero-screen {
+      min-height: 560px;
+    }
+
+    .hero-content {
+      padding-top: max(18px, env(safe-area-inset-top));
+      padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    .wallpaper-shade {
+      background:
+        linear-gradient(180deg, rgba(5, 20, 39, 0.2) 0%, rgba(5, 20, 39, 0.02) 35%, rgba(5, 20, 39, 0.08) 58%, rgba(5, 20, 39, 0.48) 100%),
+        linear-gradient(90deg, rgba(5, 20, 39, 0.12), transparent 70%);
+    }
+
+    .hero-description-card {
+      background: rgba(9, 26, 47, 0.52);
+      border-color: rgba(226, 239, 255, 0.34);
+      -webkit-backdrop-filter: blur(10px) saturate(150%);
+      backdrop-filter: blur(10px) saturate(150%);
+    }
+  }
+
+  @keyframes heroItemEnter {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
   /**
    * 毛玻璃基础类（Apple 风升级版）：
    * - backdrop-filter: blur + saturate 组合，背景色更通透、色彩更鲜活
@@ -147,16 +209,16 @@
   /* 进入视口淡入上浮动画（配合 Reveal 组件的 .is-visible 触发） */
   .reveal {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translate3d(0, 28px, 0) scale(0.985);
     transition:
-      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.72s cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 0.72s cubic-bezier(0.2, 0.8, 0.2, 1);
     will-change: opacity, transform;
   }
 
   .reveal.is-visible {
     opacity: 1;
-    transform: none;
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
